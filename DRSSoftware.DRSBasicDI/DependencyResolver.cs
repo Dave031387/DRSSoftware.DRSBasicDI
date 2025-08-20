@@ -132,19 +132,13 @@ internal sealed class DependencyResolver : IDependencyResolver
         {
             // The only way we will get to this point is if the resolvedDependency value is not
             // null.
-            if (resolvedDependency is not null)
-            {
-                return resolvedDependency;
-            }
+            return resolvedDependency!;
         }
 
         if (TryGetFactoryValue(out TDependency? factoryValue, key))
         {
             // The only way we will get to this point is if the factoryValue is not null.
-            if (factoryValue is not null)
-            {
-                return factoryValue;
-            }
+            return factoryValue!;
         }
 
         return ConstructResolvingInstance<TDependency>(key);
@@ -176,10 +170,7 @@ internal sealed class DependencyResolver : IDependencyResolver
         {
             // The only way we will get to this point is if the resolvedDependency value is not
             // null.
-            if (resolvedDependency is not null)
-            {
-                return resolvedDependency;
-            }
+            return resolvedDependency!;
         }
 
         return ConstructResolvingInstance<TDependency>(parameters, key);
@@ -409,7 +400,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// The type of the dependency that is being resolved.
     /// </typeparam>
     /// <param name="factoryValue">
-    /// The resolving object that is returned from the <see cref="Dependency.Factory" /> method for
+    /// The resolving object that is returned from the <see cref="Dependency.Factory0" /> method for
     /// the dependency type <typeparamref name="TDependency" /> that is being resolved.
     /// </param>
     /// <param name="key">
@@ -417,18 +408,18 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// </param>
     /// <returns>
     /// <see langword="true" /> if a valid resolving object is returned from the
-    /// <see cref="Dependency.Factory" /> method. Otherwise, returns <see langword="false" />.
+    /// <see cref="Dependency.Factory0" /> method. Otherwise, returns <see langword="false" />.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
     private bool TryGetFactoryValue<TDependency>(out TDependency? factoryValue, string key) where TDependency : class
     {
         IDependency dependency = DependencyList.Get<TDependency>(key);
 
-        if (dependency.Factory is not null)
+        if (dependency.Factory0 is not null)
         {
             try
             {
-                factoryValue = (TDependency?)dependency.Factory();
+                factoryValue = (TDependency?)dependency.Factory0();
             }
             catch (Exception ex)
             {
@@ -473,17 +464,14 @@ internal sealed class DependencyResolver : IDependencyResolver
     {
         IDependency dependency = DependencyList.Get<TDependency>(key);
 
-        if (ScopedService is not null)
+        if (ScopedService is not null && dependency.Lifetime is DependencyLifetime.Scoped)
         {
-            if (dependency.Lifetime is DependencyLifetime.Scoped)
-            {
-                return ScopedService.TryGetResolvingObject(out resolvedDependency, key);
-            }
+            return ScopedService.TryGetResolvingObject(out resolvedDependency, dependency);
         }
 
         if (dependency.Lifetime is DependencyLifetime.Singleton or DependencyLifetime.Scoped)
         {
-            return NonScopedService.TryGetResolvingObject(out resolvedDependency, key);
+            return NonScopedService.TryGetResolvingObject(out resolvedDependency, dependency);
         }
 
         resolvedDependency = null;

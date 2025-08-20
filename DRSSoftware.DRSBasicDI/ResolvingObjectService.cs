@@ -117,17 +117,15 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// The resolved dependency object, or <see langword="null" /> if the dependency type hasn't yet
     /// been resolved.
     /// </param>
-    /// <param name="key">
-    /// An optional key used to identify the specific <paramref name="resolvingObject" /> to be
-    /// retrieved.
+    /// <param name="dependency">
+    /// The <see cref="IDependency" /> object that is being resolved.
     /// </param>
     /// <returns>
     /// <see langword="true" /> if the given dependency type has been resolved, otherwise
     /// <see langword="false" />.
     /// </returns>
-    public bool TryGetResolvingObject<TDependency>(out TDependency? resolvingObject, string key) where TDependency : class
+    public bool TryGetResolvingObject<TDependency>(out TDependency? resolvingObject, IDependency dependency) where TDependency : class
     {
-        IDependency dependency = DependencyList.Get<TDependency>(key);
         ServiceKey serviceKey = ServiceKey.GetServiceResolvingKey(dependency);
 
         lock (_lock)
@@ -166,7 +164,7 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
             }
         }
 
-        resolvingObject = default;
+        resolvingObject = null;
         return false;
     }
 }

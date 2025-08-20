@@ -30,6 +30,9 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
                                                          typeof(Container),
                                                          DependencyLifetime.Singleton,
                                                          null,
+                                                         null,
+                                                         null,
+                                                         null,
                                                          EmptyKey);
         ServiceKey serviceKey = ServiceKey.GetServiceDependencyKey(containerDependency);
         _dependencies[serviceKey] = containerDependency;
