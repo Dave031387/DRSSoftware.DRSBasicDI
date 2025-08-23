@@ -41,6 +41,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     }
 
     /// <summary>
+    /// Create a new instance of the <see cref="DependencyResolver" /> class.
     /// </summary>
     /// <param name="serviceLocater">
     /// A service locater object that should provide mock instances of the requested dependencies.
@@ -50,16 +51,6 @@ internal sealed class DependencyResolver : IDependencyResolver
         DependencyList = serviceLocater.Get<IDependencyListConsumer>();
         ObjectConstructor = serviceLocater.Get<IObjectConstructor>();
         NonScopedService = serviceLocater.Get<IResolvingObjectsService>(NonScoped);
-    }
-
-    /// <summary>
-    /// Get a reference to the <see cref="IResolvingObjectsService" /> instance used for managing
-    /// scoped dependency objects.
-    /// </summary>
-    internal IResolvingObjectsService? ScopedService
-    {
-        get;
-        set;
     }
 
     /// <summary>
@@ -85,6 +76,16 @@ internal sealed class DependencyResolver : IDependencyResolver
     private IObjectConstructor ObjectConstructor
     {
         get;
+    }
+
+    /// <summary>
+    /// Get a reference to the <see cref="IResolvingObjectsService" /> instance used for managing
+    /// scoped dependency objects.
+    /// </summary>
+    private IResolvingObjectsService? ScopedService
+    {
+        get;
+        set;
     }
 
     /// <summary>
@@ -133,12 +134,6 @@ internal sealed class DependencyResolver : IDependencyResolver
             // The only way we will get to this point is if the resolvedDependency value is not
             // null.
             return resolvedDependency!;
-        }
-
-        if (TryGetFactoryValue(out TDependency? factoryValue, key))
-        {
-            // The only way we will get to this point is if the factoryValue is not null.
-            return factoryValue!;
         }
 
         return ConstructResolvingInstance<TDependency>(key);
@@ -390,55 +385,6 @@ internal sealed class DependencyResolver : IDependencyResolver
         }
 
         return resolvedDependency;
-    }
-
-    /// <summary>
-    /// Retrieve the resolving object from the factory method if one was defined for the given
-    /// <see cref="Dependency" /> object.
-    /// </summary>
-    /// <typeparam name="TDependency">
-    /// The type of the dependency that is being resolved.
-    /// </typeparam>
-    /// <param name="factoryValue">
-    /// The resolving object that is returned from the <see cref="Dependency.Factory0" /> method for
-    /// the dependency type <typeparamref name="TDependency" /> that is being resolved.
-    /// </param>
-    /// <param name="key">
-    /// An optional key used to identify the specific resolving object to be retrieved.
-    /// </param>
-    /// <returns>
-    /// <see langword="true" /> if a valid resolving object is returned from the
-    /// <see cref="Dependency.Factory0" /> method. Otherwise, returns <see langword="false" />.
-    /// </returns>
-    /// <exception cref="DependencyInjectionException" />
-    private bool TryGetFactoryValue<TDependency>(out TDependency? factoryValue, string key) where TDependency : class
-    {
-        IDependency dependency = DependencyList.Get<TDependency>(key);
-
-        if (dependency.Factory0 is not null)
-        {
-            try
-            {
-                factoryValue = (TDependency?)dependency.Factory0();
-            }
-            catch (Exception ex)
-            {
-                string msg1 = FormatMessage<TDependency>(MsgFactoryInvocationError, key);
-                throw new DependencyInjectionException(msg1, ex);
-            }
-
-            if (factoryValue is not null)
-            {
-                factoryValue = SaveResolvedDependency(factoryValue, key);
-                return true;
-            }
-
-            string msg2 = FormatMessage<TDependency>(MsgFactoryShouldNotReturnNull, key);
-            throw new DependencyInjectionException(msg2);
-        }
-
-        factoryValue = null;
-        return false;
     }
 
     /// <summary>

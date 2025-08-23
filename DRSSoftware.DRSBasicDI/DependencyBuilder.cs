@@ -14,30 +14,6 @@ public sealed class DependencyBuilder
     private Type? _dependencyType;
 
     /// <summary>
-    /// An optional factory method having no parameters which is used for creating instances of the
-    /// resolving type for the <see cref="IDependency" /> object that is being built.
-    /// </summary>
-    private Func<object>? _factory0;
-
-    /// <summary>
-    /// An optional factory method having one parameter which is used for creating instances of the
-    /// resolving type for the <see cref="IDependency" /> object that is being built.
-    /// </summary>
-    private Func<object, object>? _factory1;
-
-    /// <summary>
-    /// An optional factory method having two parameters which is used for creating instances of the
-    /// resolving type for the <see cref="IDependency" /> object that is being built.
-    /// </summary>
-    private Func<object, object, object>? _factory2;
-
-    /// <summary>
-    /// An optional factory method having three parameters which is used for creating instances of
-    /// the resolving type for the <see cref="IDependency" /> object that is being built.
-    /// </summary>
-    private Func<object, object, object, object>? _factory3;
-
-    /// <summary>
     /// The lifetime of the <see cref="IDependency" /> object that is being built.
     /// </summary>
     private DependencyLifetime _lifetime = DependencyLifetime.Undefined;
@@ -87,10 +63,6 @@ public sealed class DependencyBuilder
         return new Dependency(_dependencyType!,
                               _resolvingType!,
                               _lifetime,
-                              _factory0,
-                              _factory1,
-                              _factory2,
-                              _factory3,
                               resolvingKey);
     }
 
@@ -133,134 +105,6 @@ public sealed class DependencyBuilder
         }
 
         _dependencyType = dependencyType;
-        return this;
-    }
-
-    /// <summary>
-    /// Specify the factory delegate having no parameters that will be used for constructing
-    /// instances of the resolving type for the <see cref="IDependency" /> object that is being
-    /// built.
-    /// </summary>
-    /// <param name="factory">
-    /// A factory delegate that returns an instance of the resolving type for the
-    /// <see cref="IDependency" /> object that is being built.
-    /// </param>
-    /// <returns>
-    /// This <see cref="DependencyBuilder" /> instance after it has been updated with the factory
-    /// delegate information.
-    /// </returns>
-    /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithFactory(Func<object> factory)
-    {
-        if (factory is null)
-        {
-            string msg = FormatMessage(MsgNullFactory0, _dependencyType, _resolvingKey, forceDependencyName: true);
-            throw new DependencyBuildException(msg);
-        }
-
-        if (_factory0 is not null)
-        {
-            string msg = FormatMessage(MsgFactory0AlreadySpecified, _dependencyType, _resolvingKey, forceDependencyName: true);
-            throw new DependencyBuildException(msg);
-        }
-
-        _factory0 = factory;
-        return this;
-    }
-
-    /// <summary>
-    /// Specify the factory delegate having one parameter that will be used for constructing
-    /// instances of the resolving type for the <see cref="IDependency" /> object that is being
-    /// built.
-    /// </summary>
-    /// <param name="factory">
-    /// A factory delegate that returns an instance of the resolving type for the
-    /// <see cref="IDependency" /> object that is being built.
-    /// </param>
-    /// <returns>
-    /// This <see cref="DependencyBuilder" /> instance after it has been updated with the factory
-    /// delegate information.
-    /// </returns>
-    /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithFactory(Func<object, object> factory)
-    {
-        if (factory is null)
-        {
-            string msg = FormatMessage(MsgNullFactory1, _dependencyType, _resolvingKey, forceDependencyName: true);
-            throw new DependencyBuildException(msg);
-        }
-
-        if (_factory1 is not null)
-        {
-            string msg = FormatMessage(MsgFactory1AlreadySpecified, _dependencyType, _resolvingKey, forceDependencyName: true);
-            throw new DependencyBuildException(msg);
-        }
-
-        _factory1 = factory;
-        return this;
-    }
-
-    /// <summary>
-    /// Specify the factory delegate having two parameters that will be used for constructing
-    /// instances of the resolving type for the <see cref="IDependency" /> object that is being
-    /// built.
-    /// </summary>
-    /// <param name="factory">
-    /// A factory delegate that returns an instance of the resolving type for the
-    /// <see cref="IDependency" /> object that is being built.
-    /// </param>
-    /// <returns>
-    /// This <see cref="DependencyBuilder" /> instance after it has been updated with the factory
-    /// delegate information.
-    /// </returns>
-    /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithFactory(Func<object, object, object> factory)
-    {
-        if (factory is null)
-        {
-            string msg = FormatMessage(MsgNullFactory2, _dependencyType, _resolvingKey, forceDependencyName: true);
-            throw new DependencyBuildException(msg);
-        }
-
-        if (_factory2 is not null)
-        {
-            string msg = FormatMessage(MsgFactory2AlreadySpecified, _dependencyType, _resolvingKey, forceDependencyName: true);
-            throw new DependencyBuildException(msg);
-        }
-
-        _factory2 = factory;
-        return this;
-    }
-
-    /// <summary>
-    /// Specify the factory delegate having three parameters that will be used for constructing
-    /// instances of the resolving type for the <see cref="IDependency" /> object that is being
-    /// built.
-    /// </summary>
-    /// <param name="factory">
-    /// A factory delegate that returns an instance of the resolving type for the
-    /// <see cref="IDependency" /> object that is being built.
-    /// </param>
-    /// <returns>
-    /// This <see cref="DependencyBuilder" /> instance after it has been updated with the factory
-    /// delegate information.
-    /// </returns>
-    /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithFactory(Func<object, object, object, object> factory)
-    {
-        if (factory is null)
-        {
-            string msg = FormatMessage(MsgNullFactory3, _dependencyType, _resolvingKey, forceDependencyName: true);
-            throw new DependencyBuildException(msg);
-        }
-
-        if (_factory3 is not null)
-        {
-            string msg = FormatMessage(MsgFactory3AlreadySpecified, _dependencyType, _resolvingKey, forceDependencyName: true);
-            throw new DependencyBuildException(msg);
-        }
-
-        _factory3 = factory;
         return this;
     }
 
@@ -379,7 +223,6 @@ public sealed class DependencyBuilder
     {
         ValidateDependencyType();
         ValidateResolvingType();
-        ValidateFactory();
         ValidateLifetime();
     }
 
@@ -409,61 +252,6 @@ public sealed class DependencyBuilder
         {
             string msg = FormatMessage(MsgGenericDependencyTypeIsOpen, _dependencyType, _resolvingKey);
             throw new DependencyBuildException(msg);
-        }
-    }
-
-    /// <summary>
-    /// Verify that the supplied factory delegate information is valid.
-    /// </summary>
-    /// <remarks>
-    /// The return type of the factory delegate must be a type that is assignable to the specified
-    /// dependency type.
-    /// </remarks>
-    /// <exception cref="DependencyBuildException" />
-    private void ValidateFactory()
-    {
-        if (_factory0 is not null)
-        {
-            Type returnType = _factory0.Method.ReturnType;
-
-            if (!returnType.IsAssignableTo(_dependencyType))
-            {
-                string msg = FormatMessage(MsgIncompatibleFactory0, _dependencyType, _resolvingKey, returnType);
-                throw new DependencyBuildException(msg);
-            }
-        }
-
-        if (_factory1 is not null)
-        {
-            Type returnType = _factory1.Method.ReturnType;
-
-            if (!returnType.IsAssignableTo(_dependencyType))
-            {
-                string msg = FormatMessage(MsgIncompatibleFactory1, _dependencyType, _resolvingKey, returnType);
-                throw new DependencyBuildException(msg);
-            }
-        }
-
-        if (_factory2 is not null)
-        {
-            Type returnType = _factory2.Method.ReturnType;
-
-            if (!returnType.IsAssignableTo(_dependencyType))
-            {
-                string msg = FormatMessage(MsgIncompatibleFactory2, _dependencyType, _resolvingKey, returnType);
-                throw new DependencyBuildException(msg);
-            }
-        }
-
-        if (_factory3 is not null)
-        {
-            Type returnType = _factory3.Method.ReturnType;
-
-            if (!returnType.IsAssignableTo(_dependencyType))
-            {
-                string msg = FormatMessage(MsgIncompatibleFactory3, _dependencyType, _resolvingKey, returnType);
-                throw new DependencyBuildException(msg);
-            }
         }
     }
 

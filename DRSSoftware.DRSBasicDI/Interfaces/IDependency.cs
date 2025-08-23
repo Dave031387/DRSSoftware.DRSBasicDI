@@ -16,46 +16,6 @@ internal interface IDependency : IEquatable<IDependency>
     }
 
     /// <summary>
-    /// Gets the optional factory method having no parameters which is used for creating instances
-    /// of the resolving object for this <see cref="IDependency" /> object.
-    /// </summary>
-    public Func<object>? Factory0
-    {
-        get;
-        init;
-    }
-
-    /// <summary>
-    /// Gets the optional factory method having one parameter which is used for creating instances
-    /// of the resolving object for this <see cref="IDependency" /> object.
-    /// </summary>
-    public Func<object, object>? Factory1
-    {
-        get;
-        init;
-    }
-
-    /// <summary>
-    /// Gets the optional factory method having two parameters which is used for creating instances
-    /// of the resolving object for this <see cref="IDependency" /> object.
-    /// </summary>
-    public Func<object, object, object>? Factory2
-    {
-        get;
-        init;
-    }
-
-    /// <summary>
-    /// Gets the optional factory method having three parameters which is used for creating
-    /// instances of the resolving object for this <see cref="IDependency" /> object.
-    /// </summary>
-    public Func<object, object, object, object>? Factory3
-    {
-        get;
-        init;
-    }
-
-    /// <summary>
     /// Gets the optional key that can be used to identify the dependency.
     /// </summary>
     public string Key

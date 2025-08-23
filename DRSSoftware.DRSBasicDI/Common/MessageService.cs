@@ -4,10 +4,10 @@ using DRSSoftware.DRSBasicDI.Extensions;
 using System.Globalization;
 
 /// <summary>
-/// The <see cref="Messages" /> class is a static class responsible for supplying all messages to
-/// the other components of the <see cref="DrsBasicDI" /> class library.
+/// The <see cref="MessageService" /> class is a static class responsible for supplying all messages
+/// to the other components of the <see cref="DrsBasicDI" /> class library.
 /// </summary>
-internal static class Messages
+internal static class MessageService
 {
     internal const string MsgAbstractResolvingType = "The {0} for {1} must not be an abstract class type.";
     internal const string MsgCantAddToContainerAfterBuild = "Adding a dependency to the container after the container has already been built is not allowed.";
@@ -18,17 +18,7 @@ internal static class Messages
     internal const string MsgDependencyTypeAlreadySpecified = "Invalid attempt to assign dependency type more than once to {0}.";
     internal const string MsgDuplicateDependency = "The {0} has already been added to the container.";
     internal const string MsgErrorDuringConstruction = "An exception was thrown while trying to construct an instance of {0} for {1}.";
-    internal const string MsgFactory0AlreadySpecified = "Invalid attempt to assign a factory having no parameters more than once to {0}.";
-    internal const string MsgFactory1AlreadySpecified = "Invalid attempt to assign a factory having one parameter more than once to {0}.";
-    internal const string MsgFactory2AlreadySpecified = "Invalid attempt to assign a factory having two parameters more than once to {0}.";
-    internal const string MsgFactory3AlreadySpecified = "Invalid attempt to assign a factory having three parameters more than once to {0}.";
-    internal const string MsgFactoryInvocationError = "An exception was thrown when invoking the Factory method for {0}.";
-    internal const string MsgFactoryShouldNotReturnNull = "The factory for {0} must not return null.";
     internal const string MsgGenericDependencyTypeIsOpen = "Generic {0} must be fully constructed.";
-    internal const string MsgIncompatibleFactory0 = "The {0} returned from the factory having no parameters is not assignable to {1}.";
-    internal const string MsgIncompatibleFactory1 = "The {0} returned from the factory having one parameter is not assignable to {1}.";
-    internal const string MsgIncompatibleFactory2 = "The {0} returned from the factory having two parameters is not assignable to {1}.";
-    internal const string MsgIncompatibleFactory3 = "The {0} returned from the factory having three parameters is not assignable to {1}.";
     internal const string MsgIncompatibleResolvingType = "The {0} is not assignable to {1}.";
     internal const string MsgInvalidDependencyType = "The {0} must be a class type or interface type.";
     internal const string MsgInvalidResolvingType = "The {0} for {1} must be a class type.";
@@ -36,10 +26,6 @@ internal static class Messages
     internal const string MsgNoSuitableConstructors = "No suitable constructor could be found for {0}.";
     internal const string MsgNullDependencyObject = "Unexpected null dependency object returned for {0}.";
     internal const string MsgNullDependencyType = "Invalid attempt to assign a null value to the dependency type.";
-    internal const string MsgNullFactory0 = "Invalid attempt to assign a null value to the factory having no parameters for {0}.";
-    internal const string MsgNullFactory1 = "Invalid attempt to assign a null value to the factory having one parameter for {0}.";
-    internal const string MsgNullFactory2 = "Invalid attempt to assign a null value to the factory having two parameters for {0}.";
-    internal const string MsgNullFactory3 = "Invalid attempt to assign a null value to the factory having three parameters for {0}.";
     internal const string MsgNullResolvingKey = "Invalid attempt to assign a null value to the resolving key for {0}.";
     internal const string MsgNullResolvingType = "Invalid attempt to assign a null value to the resolving type for {0}.";
     internal const string MsgResolveMethodInfoNotFound = "The attempt to retrieve the MethodInfo for the Resolve method failed.";
@@ -140,7 +126,7 @@ internal static class Messages
     }
 
     /// <summary>
-    /// Get the dependency name string for the given dependency type name and resolving key.
+    /// Format the dependency name string for the given dependency type name and resolving key.
     /// </summary>
     /// <param name="dependencyTypeName">
     /// The dependency type name.
@@ -149,9 +135,9 @@ internal static class Messages
     /// The resolving key.
     /// </param>
     /// <returns>
-    /// The generated dependency name string.
+    /// The formatted dependency name string.
     /// </returns>
-    internal static string GetDependencyName(string dependencyTypeName, string? resolvingKey)
+    private static string FormatDependencyName(string dependencyTypeName, string? resolvingKey)
     {
         string part1 = $"dependency type {dependencyTypeName}";
         string key = resolvingKey ?? EmptyKey;
@@ -160,15 +146,15 @@ internal static class Messages
     }
 
     /// <summary>
-    /// Get the resolving name string for the given resolving type name.
+    /// Format the resolving name string for the given resolving type name.
     /// </summary>
     /// <param name="resolvingTypeName">
     /// The resolving type name.
     /// </param>
     /// <returns>
-    /// The generated resolving name string.
+    /// The formatted resolving name string.
     /// </returns>
-    internal static string GetResolvingName(string resolvingTypeName)
+    private static string FormatResolvingName(string resolvingTypeName)
         => $"resolving type {resolvingTypeName}";
 
     /// <summary>
@@ -186,7 +172,7 @@ internal static class Messages
     private static string GetDependencyName(Type? dependencyType, string? resolvingKey)
     {
         string dependencyTypeName = dependencyType is null ? NA : dependencyType.GetFriendlyName();
-        return GetDependencyName(dependencyTypeName, resolvingKey);
+        return FormatDependencyName(dependencyTypeName, resolvingKey);
     }
 
     /// <summary>
@@ -201,6 +187,6 @@ internal static class Messages
     private static string GetResolvingName(Type resolvingType)
     {
         string resolvingTypeName = resolvingType.GetFriendlyName();
-        return GetResolvingName(resolvingTypeName);
+        return FormatResolvingName(resolvingTypeName);
     }
 }
