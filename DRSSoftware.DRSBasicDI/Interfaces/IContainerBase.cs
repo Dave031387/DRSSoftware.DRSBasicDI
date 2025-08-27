@@ -1,5 +1,12 @@
 ﻿namespace DRSSoftware.DRSBasicDI.Interfaces;
 
+/// <summary>
+/// The <see cref="IContainerBase" /> interface defines methods for resolving dependencies. It is
+/// the base interface for the scoped and non-scoped dependency injection containers.
+/// </summary>
+/// <remarks>
+/// This interface inherits from the <see cref="IDisposable" /> interface.
+/// </remarks>
 public interface IContainerBase : IDisposable
 {
     /// <summary>
@@ -30,7 +37,7 @@ public interface IContainerBase : IDisposable
     /// The dependency type that is to be retrieved.
     /// </typeparam>
     /// <param name="parameters">
-    /// The complete list of parameters required by the constructor of the resolving type.
+    /// An array containing all parameters required by the constructor of the resolving type.
     /// </param>
     /// <param name="key">
     /// An optional key used to identify the specific resolving object to be retrieved.

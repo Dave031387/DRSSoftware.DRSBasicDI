@@ -2,9 +2,13 @@
 
 using DRSSoftware.DRSBasicDI.Interfaces;
 
-internal abstract class ContainerBase : IDisposable
+/// <summary>
+/// The <see cref="ContainerBase" /> class is an abstract base class that is implemented in both the
+/// <see cref="Container" /> and <see cref="Scope" /> classes. The class implements methods for
+/// resolving and disposing of dependencies.
+/// </summary>
+internal abstract class ContainerBase : IContainerBase
 {
-
     /// <summary>
     /// Get a reference to the <see cref="IDependencyResolver" /> object.
     /// </summary>
@@ -48,7 +52,7 @@ internal abstract class ContainerBase : IDisposable
     /// The dependency type that is to be retrieved.
     /// </typeparam>
     /// <param name="parameters">
-    /// The complete list of parameters required by the constructor of the resolving type.
+    /// An array containing all the parameters required by the constructor of the resolving type.
     /// </param>
     /// <param name="key">
     /// An optional key used to identify the specific resolving object to be retrieved.

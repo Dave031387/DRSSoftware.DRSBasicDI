@@ -3,7 +3,8 @@
 using DRSSoftware.DRSBasicDI.Interfaces;
 
 /// <summary>
-/// The <see cref="Container" /> class implements a basic dependency injection container.
+/// The <see cref="Container" /> class implements a basic dependency injection container for
+/// managing and resolving non-scoped dependencies.
 /// </summary>
 internal sealed class Container : ContainerBase, IContainer
 {

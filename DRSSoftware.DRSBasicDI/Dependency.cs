@@ -3,8 +3,8 @@
 using DRSSoftware.DRSBasicDI.Interfaces;
 
 /// <summary>
-/// The <see cref="Dependency" /> record represents a single dependency in an application for which
-/// we want to use dependency injection.
+/// The <see cref="Dependency" /> record contains properties that describe a single dependency
+/// within an application.
 /// </summary>
 /// <param name="DependencyType">
 /// Gets the dependency type of this <see cref="Dependency" /> object.
@@ -17,13 +17,24 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 /// Gets the resolving type that is mapped to the <see cref="DependencyType" /> property.
 /// </param>
 /// <param name="Key">
-/// An optional key that can be used to identify the dependency.
+/// Gets a unique resolving key value used for resolving dependencies having more than one defined
+/// implementation.
 /// </param>
 internal record Dependency(Type DependencyType,
-                                    Type ResolvingType,
-                                    DependencyLifetime Lifetime,
-                                    string Key) : IDependency
+                                  Type ResolvingType,
+                                  DependencyLifetime Lifetime,
+                                  string Key) : IDependency
 {
+    /// <summary>
+    /// Gets the dependency <see cref="ServiceKey" /> for this <see cref="Dependency" /> object.
+    /// </summary>
+    public ServiceKey DependencyServiceKey => new(DependencyType, Key);
+
+    /// <summary>
+    /// Gets the resolving <see cref="ServiceKey" /> for this <see cref="Dependency" /> object.
+    /// </summary>
+    public ServiceKey ResolvingServiceKey => new(ResolvingType, Key);
+
     /// <summary>
     /// Indicates whether the current <see cref="Dependency" /> object is equal to the specified
     /// <see cref="IDependency" /> object.
@@ -34,8 +45,7 @@ internal record Dependency(Type DependencyType,
     /// </param>
     /// <returns>
     /// <see langword="true" /> if this <see cref="Dependency" /> object is equal to the
-    /// <paramref name="other" /> <see cref="IDependency" /> object; otherwise,
-    /// <see langword="false" />
+    /// <paramref name="other" /> object; otherwise, <see langword="false" />
     /// </returns>
     public virtual bool Equals(IDependency? other) => other is not null
                                                       && other.DependencyType == DependencyType

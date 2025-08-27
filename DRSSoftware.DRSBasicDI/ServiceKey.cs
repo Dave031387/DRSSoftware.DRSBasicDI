@@ -33,68 +33,6 @@ internal sealed class ServiceKey(Type type, string key) : IEquatable<ServiceKey>
     } = type;
 
     /// <summary>
-    /// Get the <see cref="ServiceKey" /> corresponding to the dependency type of the given
-    /// <paramref name="dependency" />.
-    /// </summary>
-    /// <param name="dependency">
-    /// The <see cref="IDependency" /> object for which we want to get the corresponding
-    /// <see cref="ServiceKey" />.
-    /// </param>
-    /// <returns>
-    /// The <see cref="ServiceKey" /> corresponding to the dependency type of the given
-    /// <paramref name="dependency" />
-    /// </returns>
-    internal static ServiceKey GetServiceDependencyKey(IDependency dependency)
-        => GetServiceKey(dependency.DependencyType, dependency.Key);
-
-    /// <summary>
-    /// Get the <see cref="ServiceKey" /> corresponding to the given type <typeparamref name="T" />
-    /// and <paramref name="key" /> values.
-    /// </summary>
-    /// <typeparam name="T">
-    /// The type component of the <see cref="ServiceKey" /> object.
-    /// </typeparam>
-    /// <param name="key">
-    /// The key component of the <see cref="ServiceKey" /> object.
-    /// </param>
-    /// <returns>
-    /// The requested <see cref="ServiceKey" /> object.
-    /// </returns>
-    internal static ServiceKey GetServiceKey<T>(string key) where T : class
-        => GetServiceKey(typeof(T), key);
-
-    /// <summary>
-    /// Get the <see cref="ServiceKey" /> corresponding to the given <paramref name="type" /> and
-    /// <paramref name="key" /> values.
-    /// </summary>
-    /// <param name="type">
-    /// The type component of the <see cref="ServiceKey" /> object.
-    /// </param>
-    /// <param name="key">
-    /// The key component of the <see cref="ServiceKey" /> object.
-    /// </param>
-    /// <returns>
-    /// The requested <see cref="ServiceKey" /> object.
-    /// </returns>
-    internal static ServiceKey GetServiceKey(Type type, string key)
-        => new(type, key);
-
-    /// <summary>
-    /// Get the <see cref="ServiceKey" /> corresponding to the resolving type of the given
-    /// <paramref name="dependency" />.
-    /// </summary>
-    /// <param name="dependency">
-    /// The <see cref="IDependency" /> object for which we want to get the corresponding
-    /// <see cref="ServiceKey" />.
-    /// </param>
-    /// <returns>
-    /// The <see cref="ServiceKey" /> corresponding to the resolving type of the given
-    /// <paramref name="dependency" />
-    /// </returns>
-    internal static ServiceKey GetServiceResolvingKey(IDependency dependency)
-        => GetServiceKey(dependency.ResolvingType, dependency.Key);
-
-    /// <summary>
     /// Determine whether the given <paramref name="other" /> <see cref="ServiceKey" /> object is
     /// equal to this object.
     /// </summary>

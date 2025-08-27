@@ -7,7 +7,7 @@
 internal interface IDependencyListBuilder
 {
     /// <summary>
-    /// Get the number of dependencies in the container.
+    /// Get the number of <see cref="IDependency" /> objects stored in the dependency list.
     /// </summary>
     public int Count
     {

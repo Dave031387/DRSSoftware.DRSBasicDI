@@ -1,6 +1,6 @@
-# DrsBasicDI Dependency Injection Container Class Library
+# DRSBasicDI Dependency Injection Container
 ## Overview
-The ***DrsBasicDI*** class library is a simple and lightweight dependency injection container designed for .NET applications. It provides a
+The ***DRSBasicDI*** class library is a simple and lightweight dependency injection container designed for .NET applications. It provides a
 straightforward way to manage object lifetimes and dependencies, making it easier to build maintainable and testable applications.
 
 ## Background
@@ -32,25 +32,31 @@ readable syntax when configuring the container, as developers can chain method c
 
 > [!NOTE]
 > *The **Instance** method actually returns an **IContainerBuilder** interface object. This provides a level of abstraction between the user's source
-> code and the internals of the **DrsBasicDI** class library.*
+> code and the internals of the **DRSBasicDI** class library.*
 
 Example:
 
 ```csharp
-using DrsBasicDI;
+using DRSSoftware.DRSBasicDI;
 IContainerBuilder builder = ContainerBuilder.Instance;
 ```
 
+You would typically create the ***ContainerBuilder*** instance in the method that is the executable entry point of your project, or in a separate
+method that is called from that method. This is necessary in order to ensure that all services have been defined and are ready to be resolved before
+any other classes are instantiated.
+
 ### Registering Services
 The ***ContainerBuilder*** class provides methods for registering services with different lifetimes. The following methods are available for
-registering services that don't require the use of a resolving key or a factory method:
+registering services that don't require the use of a resolving key:
 
 - ***AddTransient<TDependency, TResolving>()***: Registers a service with a transient lifetime. A new instance of the service will be created each
   time it is requested.
-- ***AddSingleton<TDependency, TResolving>()***: Registers a service with a singleton lifetime. A single instance of the service will be created and
-  shared across all requests.
-- ***AddScoped<TDependency, TResolving>()***: Registers a service with a scoped lifetime. A new instance of the service will be created for each
-  scope, and the same instance will be shared within that scope.
+- ***AddSingleton<TDependency, TResolving>()***: Registers a service with a singleton lifetime. A new instance of the service will be created the
+  first time it is requested and then that same instance will be returned every time the services is requested thereafter. The instance will remain
+  alive until the end of the program execution.
+- ***AddScoped<TDependency, TResolving>()***: Registers a service with a scoped lifetime. A new instance of the service will be created the first time
+  it is requested within a given scope. That same instance will be returned on subsequent requests for that same service within the same scope. Each
+  active scope, though, will have its own instance of the given service. The instance will be automatically destroyed at the end of each scope.
 
 The *TDependency* type parameter is often referred to as the "service type" or "interface type," while the *TResolving* type parameter is
 referred to as the "implementation type" or "concrete type." The *TDependency* type parameter represents the type that clients will depend on, while
@@ -60,7 +66,7 @@ dependencies, making it easier to swap out implementations or create mock object
 The following code snippet illustrates the use of these methods:
 
 ```csharp
-using DrsBasicDI;
+using DRSSoftware.DRSBasicDI;
 IContainer container = ContainerBuilder.Instance
     .AddTransient<IService, Service>()
     .AddSingleton<IRepository, Repository>()
@@ -79,8 +85,8 @@ There are a few things to take note of in this example:
 - The ***ContainerBuilder*** is of no further use after the container has been built. In other words, you can't use the ***ContainerBuilder*** to
   build another container or to alter the existing one.
 
-### Specifying Factory Methods and Resolving Keys
-The ***ContainerBuilder*** class also provides methods for registering services that require a factory method and/or a resolving key. The following
+### Specifying a Resolving Key
+The ***ContainerBuilder*** class also provides methods for registering services that require a resolving key. The following
 methods are available for registering these types of services:
 
 - ***AddTransient<TDependency, TResolving>(Func<DependencyBuilder, DependencyBuilder> builder)***
@@ -92,8 +98,6 @@ allows you to further configure the service using the ***DependencyBuilder*** cl
 a fluent API for configuring the properties of the service being registered. The ***DependencyBuilder*** class contains two methods that are pertinent
 to our discussion:
 
-- ***WithFactory(Func\<object> factory)***: Specifies a factory method that will be used to create the instance of the service. This allows for more
-  complex initialization logic or the use of external resources when creating the service.
 - ***WithResolvingKey(string resolvingKey)***: Specifies a resolving key that can be used to resolve the service. This allows for the registration of
   multiple implementations of the same service type, enabling the use of different implementations based on the resolving key.
 
@@ -107,18 +111,38 @@ has been set up.
 The following code snippet illustrates the use of these methods:
 
 ```csharp
-using DrsBasicDI;
+using DRSSoftware.DRSBasicDI;
 
 public interface IMyService
 {
     string Name { get; }
 }
 
-public class MyService : IMyService
+public class MyService1 : IMyService
 {
-    public MyService(string name)
+    public MyService1()
     {
-        Name = name;
+        Name = "MyService1";
+    }
+
+    public string Name { get; }
+}
+
+public class MyService2 : IMyService
+{
+    public MyService1()
+    {
+        Name = "MyService2";
+    }
+
+    public string Name { get; }
+}
+
+public class MyService3 : IMyService
+{
+    public MyService1()
+    {
+        Name = "MyService3";
     }
 
     public string Name { get; }
@@ -128,27 +152,21 @@ public const string Key1 = "Test1";
 public const string Key2 = "Test2";
 
 IContainer container = ContainerBuilder.Instance
-    .AddTransient<IMyService, MyService>(builder => builder
-        .WithFactory(() => new MyService("Transient"))
+    .AddTransient<IMyService, MyService1>(builder => builder
         .WithResolvingKey(Key1))
-    .AddSingleton<IMyService, MyService>(builder => builder
+    .AddSingleton<IMyService, MyService2>(builder => builder
         .WithResolvingKey(Key2))
-    .AddScoped<IMyService, MyService>(builder => builder
-        .WithFactory(() => new MyService("Scoped"))
+    .AddScoped<IMyService, MyService3>()
     .Build();
 ```
 
 In this example, we register three different implementations of the ***IMyService*** interface using different lifetimes and resolving keys. Two of
-the implementations use the ***WithFactory*** method to specify a factory method that creates the instance of the service, and two use the
-***WithResolvingKey*** method to specify a resolving key that can be used to resolve the service. Also, note that the factory method must not take any
-parameters and it must return an object whose type is assignable to the service type. This is a design decision that helps to ensure that the factory
-method is simple and easy to use, while still providing the flexibility needed to create complex objects.
+the implementations use the ***WithResolvingKey*** method to specify a resolving key that can be used to resolve the service.
 
 One other thing to note is that services that are registered without the ***WithResolvingKey*** method will default to a key that is an empty string.
 That is why in the example we don't need to call the ***WithResolvingKey*** method for the ***AddScoped*** method even though we are registering
 another implementation of the ***IMyService*** interface. The ***AddScoped*** method will automatically use the empty string as the resolving key
-unless we specify otherwise. This allows for a more streamlined and readable syntax, as we don't need to specify the resolving key for every
-implementation of the service.
+unless we specify otherwise.
 
 ### Other Methods for Registering Services
 The methods mentioned above should be able to meet most all of your service registration needs. However, there are a few other methods that are
@@ -185,7 +203,7 @@ list of methods includes:
 The following example illustrates the use of these methods:
 
 ```csharp
-using DrsBasicDI;
+using DRSSoftware.DRSBasicDI;
 
 public interface IMyService
 {
@@ -219,13 +237,12 @@ IContainer container = ContainerBuilder.Instance
 ### Dependency Build Rules
 Each dependency (service) that is registered must conform to the following rules:
 
-- Each service must have a defined dependency type, resolving type, and lifetime. Optionally, they may also specify a factory method and/or a
-  resolving key.
+- Each service must have a defined dependency type, resolving type, and lifetime. Optionally, they may also specify a resolving key.
 - Each property of a service must be specified only once. For example, the following code would result in an exception because the dependency type is
   specified both by the generic type parameter on the ***AddSingleton*** method and by the ***WithDependencyType*** method:
 
   ```csharp
-    using DrsBasicDI;
+    using DRSSoftware.DRSBasicDI;
     IContainer container = ContainerBuilder.Instance
         .AddSingleton<IMyService>(builder => builder
             .WithDependencyType(typeof(IMyService))
@@ -236,11 +253,10 @@ Each dependency (service) that is registered must conform to the following rules
 - No two services can have the same dependency type and resolving key.
 - The dependency type of the service must be an interface type, a concrete class type, or a fully-constructed generic type (valid type values must be
   assigned to all generic type parameters). Abstract class types are not supported.
-- If specified, the return type of the factory method must be assignable to the dependency type.
 - The dependency lifetime must not be undefined. It must be explicitly set to one of the valid values (***DependencyLifetime.Transient***,
   ***DependencyLifetime.Singleton***, or ***DependencyLifetime.Scoped***).
 - The resolving key, if specified, must be a valid string value. It must not be null or empty. (The empty string is reserved for internal use by the
-  class library.)
+  class library to denote "no resolving key".)
 - The resolving type of the service must be a concrete class type or a fully-constructed generic type (valid type values must be assigned to all
   generic type parameters). Abstract class types are not supported.
 - The resolving type of the service must be assignable to the dependency type. This means that the resolving type must implement the dependency type
@@ -285,7 +301,7 @@ The following steps are taken when resolving a dependency:
 The following example illustrates the use of the ***Resolve*** method:
 
 ```csharp
-using DrsBasicDI;
+using DRSSoftware.DRSBasicDI;
 
 public interface IService1
 {
@@ -360,7 +376,7 @@ scope, and disposing of the scope will also dispose of any scoped services that 
 The following example illustrates the use of the ***CreateScope*** method:
 
 ```csharp
-using DrsBasicDI;
+using DRSSoftware.DRSBasicDI;
 
 public interface IService
 {
@@ -452,7 +468,7 @@ The following example is similar to the example given for the ***Resolve*** meth
 show how things work when resolving scoped dependencies:
 
 ```csharp
-using DrsBasicDI;
+using DRSSoftware.DRSBasicDI;
 
 public interface IService1
 {
@@ -531,7 +547,7 @@ to specify the resolving key for the dependency.
 The following example illustrates the use of the ***ResolvingKey*** attribute:
 
 ```csharp
-using DrsBasicDI;
+using DRSSoftware.DRSBasicDI;
 
 public interface IService1
 {

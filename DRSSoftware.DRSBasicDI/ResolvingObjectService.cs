@@ -15,7 +15,7 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
 
     /// <summary>
     /// A lock object used to ensure thread safety when accessing/modifying the
-    /// <see cref="_resolvingObjects" /> field.
+    /// <see cref="_resolvingObjects" /> dictionary.
     /// </summary>
     private readonly object _lock = new();
 
@@ -37,7 +37,7 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
         => DependencyList = serviceLocater.Get<IDependencyListConsumer>();
 
     /// <summary>
-    /// Get a reference to the <see cref="IDependencyListBuilder" /> object.
+    /// Get a reference to the <see cref="IDependencyListConsumer" /> object.
     /// </summary>
     private IDependencyListConsumer DependencyList
     {
@@ -67,12 +67,12 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// </returns>
     public TDependency Add<TDependency>(TDependency resolvingObject, string key) where TDependency : class
     {
-        IDependency dependency = DependencyList.Get<TDependency>(key);
-        ServiceKey serviceKey = ServiceKey.GetServiceResolvingKey(dependency);
+        ServiceKey serviceKey = new(typeof(TDependency), key);
+        IDependency dependency = DependencyList.Get(serviceKey);
 
         lock (_lock)
         {
-            if (TryGetResolvingObject(out TDependency? value, serviceKey))
+            if (TryGetResolvingObject(out TDependency? value, dependency.ResolvingServiceKey))
             {
                 // If we get here then a resolving object for the given dependency type has already
                 // been added to the container and the resolving object that was added isn't null.
@@ -81,7 +81,7 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
 
             // If we get here then a resolving object hasn't yet been added to the container for the
             // given dependency type.
-            _resolvingObjects[serviceKey] = resolvingObject;
+            _resolvingObjects[dependency.ResolvingServiceKey] = resolvingObject;
             return resolvingObject;
         }
     }
@@ -126,11 +126,9 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// </returns>
     public bool TryGetResolvingObject<TDependency>(out TDependency? resolvingObject, IDependency dependency) where TDependency : class
     {
-        ServiceKey serviceKey = ServiceKey.GetServiceResolvingKey(dependency);
-
         lock (_lock)
         {
-            return TryGetResolvingObject(out resolvingObject, serviceKey);
+            return TryGetResolvingObject(out resolvingObject, dependency.ResolvingServiceKey);
         }
     }
 

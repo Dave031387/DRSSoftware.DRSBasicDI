@@ -4,8 +4,8 @@ using DRSSoftware.DRSBasicDI.Extensions;
 using System.Globalization;
 
 /// <summary>
-/// The <see cref="MessageService" /> class is a static class responsible for supplying all messages
-/// to the other components of the <see cref="DrsBasicDI" /> class library.
+/// The <see cref="MessageService" /> class is a static class responsible for supplying formatted
+/// messages to the other components of the <see cref="DRSBasicDI" /> class library.
 /// </summary>
 internal static class MessageService
 {
@@ -13,7 +13,7 @@ internal static class MessageService
     internal const string MsgCantAddToContainerAfterBuild = "Adding a dependency to the container after the container has already been built is not allowed.";
     internal const string MsgConstructorNotFound = "No constructor having the correct number of parameters could be found for {0}.";
     internal const string MsgContainerCantBeBuiltMoreThanOnce = "The container has already been built. It can't be built again.";
-    internal const string MsgContainerIsEmpty = "The dependency container must contain at least one dependency.";
+    internal const string MsgContainerIsEmpty = "There must be at least one valid dependency defined before the dependency container can be built.";
     internal const string MsgDependencyMappingNotFound = "No mapping exists for {0}.";
     internal const string MsgDependencyTypeAlreadySpecified = "Invalid attempt to assign dependency type more than once to {0}.";
     internal const string MsgDuplicateDependency = "The {0} has already been added to the container.";

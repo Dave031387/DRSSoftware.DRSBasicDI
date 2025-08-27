@@ -7,7 +7,7 @@ using IContainer = Interfaces.IContainer;
 /// <summary>
 /// The <see cref="ServiceLocater" /> class implements a basic service locater pattern for
 /// dependency injection. This class is used strictly for resolving dependencies within the
-/// <see cref="DrsBasicDI" /> class library.
+/// <see cref="DRSBasicDI" /> class library.
 /// </summary>
 internal sealed class ServiceLocater : IServiceLocater
 {
@@ -23,20 +23,20 @@ internal sealed class ServiceLocater : IServiceLocater
     private static readonly Lazy<IServiceLocater> _instance = new(() => new ServiceLocater());
 
     /// <summary>
-    /// A dictionary of service descriptors used to store the interface type, implementation type,
-    /// and lifetime of all dependencies in the <see cref="DrsBasicDI" /> class library.
+    /// A dictionary of <see cref="Dependency" /> objects representing the various application
+    /// dependencies in the <see cref="DRSBasicDI" /> class library.
     /// </summary>
-    private readonly Dictionary<ServiceKey, ServiceDescriptor> _serviceDescriptors = [];
+    private readonly Dictionary<ServiceKey, Dependency> _services = [];
 
     /// <summary>
     /// A dictionary of singleton instances used to store all singleton dependency objects in the
-    /// <see cref="DrsBasicDI" /> class library.
+    /// <see cref="DRSBasicDI" /> class library.
     /// </summary>
     private readonly Dictionary<ServiceKey, object> _singletonInstances = [];
 
     /// <summary>
     /// Create a new instance of the <see cref="ServiceLocater" /> class and register all of the
-    /// dependencies for the <see cref="DrsBasicDI" /> class library.
+    /// dependencies for the <see cref="DRSBasicDI" /> class library.
     /// </summary>
     /// <remarks>
     /// This is a private constructor to prevent external instantiation of the
@@ -79,21 +79,19 @@ internal sealed class ServiceLocater : IServiceLocater
     /// <exception cref="ServiceLocaterException" />
     public T Get<T>(string key = EmptyKey) where T : class
     {
-        ServiceKey serviceKey = ServiceKey.GetServiceKey<T>(key);
-
-        if (_serviceDescriptors.TryGetValue(serviceKey, out ServiceDescriptor? serviceDescriptor))
+        if (_services.TryGetValue(new(typeof(T), key), out Dependency? service))
         {
-            if (serviceDescriptor is not null)
+            if (service is not null)
             {
                 try
                 {
-                    serviceKey = ServiceKey.GetServiceKey(serviceDescriptor.ImplementationType, key);
-                    ConstructorInfo? constructorInfo = serviceDescriptor.ImplementationType.GetConstructor(ConstructorBindingFlags,
-                                                                                                           null,
-                                                                                                           [],
-                                                                                                           null);
+                    ConstructorInfo? constructorInfo = service.ResolvingType.GetConstructor(ConstructorBindingFlags,
+                                                                                            null,
+                                                                                            Type.EmptyTypes,
+                                                                                            null);
+                    ServiceKey serviceKey = service.ResolvingServiceKey;
 
-                    if (serviceDescriptor.Lifetime == DependencyLifetime.Singleton)
+                    if (service.Lifetime == DependencyLifetime.Singleton)
                     {
                         if (_singletonInstances.TryGetValue(serviceKey, out object? instance))
                         {
@@ -105,7 +103,7 @@ internal sealed class ServiceLocater : IServiceLocater
 
                         if (constructorInfo is not null)
                         {
-                            instance = constructorInfo.Invoke([]);
+                            instance = constructorInfo.Invoke(null);
                             _singletonInstances[serviceKey] = instance;
                             return (T)instance;
                         }
@@ -147,10 +145,8 @@ internal sealed class ServiceLocater : IServiceLocater
         where TInterface : class
         where TImplementation : TInterface
     {
-        ServiceKey serviceKey = ServiceKey.GetServiceKey<TInterface>(key);
-        _serviceDescriptors[serviceKey] = new ServiceDescriptor(typeof(TInterface),
-                                                                typeof(TImplementation),
-                                                                DependencyLifetime.Singleton);
+        Dependency dependency = new(typeof(TInterface), typeof(TImplementation), DependencyLifetime.Singleton, key);
+        _services[dependency.DependencyServiceKey] = dependency;
     }
 
     /// <summary>
@@ -169,28 +165,7 @@ internal sealed class ServiceLocater : IServiceLocater
         where TInterface : class
         where TImplementation : TInterface
     {
-        ServiceKey serviceKey = ServiceKey.GetServiceKey<TInterface>(key);
-        _serviceDescriptors[serviceKey] = new ServiceDescriptor(typeof(TInterface),
-                                                                typeof(TImplementation),
-                                                                DependencyLifetime.Transient);
-    }
-
-    /// <summary>
-    /// The <see cref="ServiceDescriptor" /> class is used to store the interface type,
-    /// implementation type, and lifetime of a dependency.
-    /// </summary>
-    /// <param name="InterfaceType">
-    /// The interface type of the dependency.
-    /// </param>
-    /// <param name="ImplementationType">
-    /// The implementation type of the dependency.
-    /// </param>
-    /// <param name="Lifetime">
-    /// The lifetime of the dependency.
-    /// </param>
-    private sealed record ServiceDescriptor(Type InterfaceType,
-                                            Type ImplementationType,
-                                            DependencyLifetime Lifetime)
-    {
+        Dependency dependency = new(typeof(TInterface), typeof(TImplementation), DependencyLifetime.Transient, key);
+        _services[dependency.DependencyServiceKey] = dependency;
     }
 }

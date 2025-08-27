@@ -2,8 +2,12 @@
 
 /// <summary>
 /// The <see cref="IContainer" /> interface defines the methods and properties for a simple
-/// dependency injection container.
+/// dependency injection container for managing and resolving non-scoped dependencies.
 /// </summary>
+/// <remarks>
+/// This interface inherits from the <see cref="IContainerBase" /> interface which in turn inherits
+/// from <see cref="IDisposable" />.
+/// </remarks>
 public interface IContainer : IContainerBase
 {
     /// <summary>

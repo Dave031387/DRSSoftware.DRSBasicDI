@@ -3,8 +3,8 @@
 using System.Reflection;
 
 /// <summary>
-/// The <see cref="IObjectConstructor" /> defines a method for constructing resolving objects for a
-/// given dependency type.
+/// The <see cref="IObjectConstructor" /> defines a method for constructing the resolving object for
+/// a given dependency type.
 /// </summary>
 internal interface IObjectConstructor
 {

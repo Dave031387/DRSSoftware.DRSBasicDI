@@ -1,11 +1,19 @@
 ﻿namespace DRSSoftware.DRSBasicDI.Interfaces;
 
 /// <summary>
-/// The <see cref="IDependency" /> interface defines the properties and methods for a dependency
-/// object.
+/// The <see cref="IDependency" /> interface defines the properties that describe a singe dependency
+/// within an application.
 /// </summary>
 internal interface IDependency : IEquatable<IDependency>
 {
+    /// <summary>
+    /// Gets the dependency <see cref="ServiceKey" /> for this <see cref="IDependency" /> object.
+    /// </summary>
+    ServiceKey DependencyServiceKey
+    {
+        get;
+    }
+
     /// <summary>
     /// Gets the dependency type of this <see cref="IDependency" /> object.
     /// </summary>
@@ -16,7 +24,8 @@ internal interface IDependency : IEquatable<IDependency>
     }
 
     /// <summary>
-    /// Gets the optional key that can be used to identify the dependency.
+    /// Gets a unique resolving key value used for resolving dependencies having more than one
+    /// defined implementation.
     /// </summary>
     public string Key
     {
@@ -32,6 +41,14 @@ internal interface IDependency : IEquatable<IDependency>
     {
         get;
         init;
+    }
+
+    /// <summary>
+    /// Gets the resolving <see cref="ServiceKey" /> for this <see cref="IDependency" /> object.
+    /// </summary>
+    ServiceKey ResolvingServiceKey
+    {
+        get;
     }
 
     /// <summary>

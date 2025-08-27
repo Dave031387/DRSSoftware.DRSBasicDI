@@ -1,8 +1,8 @@
 ﻿namespace DRSSoftware.DRSBasicDI.Interfaces;
 
 /// <summary>
-/// The <see cref="IDependencyResolver" /> interface defines the methods implemented by the
-/// dependency resolver object.
+/// The <see cref="IDependencyResolver" /> interface defines the methods used to resolve application
+/// dependencies.
 /// </summary>
 internal interface IDependencyResolver : IDisposable
 {
@@ -17,7 +17,7 @@ internal interface IDependencyResolver : IDisposable
     /// An optional key used to identify the specific resolving object to be retrieved.
     /// </param>
     /// <returns>
-    /// An instance of the resolving class type.
+    /// An instance of the resolving class type cast as the dependency type.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
     public TDependency Resolve<TDependency>(string key) where TDependency : class;
@@ -37,7 +37,7 @@ internal interface IDependencyResolver : IDisposable
     /// An optional key used to identify the specific resolving object to be retrieved.
     /// </param>
     /// <returns>
-    /// An instance of the resolving class type.
+    /// An instance of the resolving class type cast as the dependency type.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
     public TDependency Resolve<TDependency>(object[] parameters, string key) where TDependency : class;

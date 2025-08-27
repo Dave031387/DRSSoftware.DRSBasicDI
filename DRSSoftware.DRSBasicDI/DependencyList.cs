@@ -4,8 +4,8 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 using IContainer = Interfaces.IContainer;
 
 /// <summary>
-/// The <see cref="DependencyList" /> class is used to storing and retrieving
-/// <see cref="IDependency" /> objects.
+/// The <see cref="DependencyList" /> class is used for storing and retrieving
+/// <see cref="IDependency" /> objects representing application dependencies.
 /// </summary>
 internal sealed class DependencyList : IDependencyListBuilder, IDependencyListConsumer
 {
@@ -26,16 +26,15 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     /// </summary>
     internal DependencyList()
     {
-        IDependency containerDependency = new Dependency(typeof(IContainer),
-                                                         typeof(Container),
-                                                         DependencyLifetime.Singleton,
-                                                         EmptyKey);
-        ServiceKey serviceKey = ServiceKey.GetServiceDependencyKey(containerDependency);
-        _dependencies[serviceKey] = containerDependency;
+        Dependency containerDependency = new(typeof(IContainer),
+                                             typeof(Container),
+                                             DependencyLifetime.Singleton,
+                                             EmptyKey);
+        _dependencies[containerDependency.DependencyServiceKey] = containerDependency;
     }
 
     /// <summary>
-    /// Get the number of dependencies in the container.
+    /// Gets the number of dependencies in the container.
     /// </summary>
     public int Count => _dependencies.Count;
 
@@ -48,7 +47,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     /// <exception cref="ContainerBuildException" />
     public void Add(IDependency dependency)
     {
-        ServiceKey serviceKey = ServiceKey.GetServiceDependencyKey(dependency);
+        ServiceKey serviceKey = dependency.DependencyServiceKey;
 
         lock (_lock)
         {
@@ -63,51 +62,27 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     }
 
     /// <summary>
-    /// Get the <see cref="IDependency" /> object for the given dependency type
-    /// <typeparamref name="TDependency" /> and <paramref name="key" /> value.
+    /// Get the <see cref="IDependency" /> object associated with the given
+    /// <paramref name="serviceKey" />.
     /// </summary>
-    /// <typeparam name="TDependency">
-    /// The type of dependency to be retrieved.
-    /// </typeparam>
-    /// <param name="key">
-    /// An optional key used to identify the specific <see cref="IDependency" /> object to be
-    /// retrieved.
-    /// </param>
-    /// <returns>
-    /// The <see cref="IDependency" /> instance corresponding to the given dependency type
-    /// <typeparamref name="TDependency" /> and <paramref name="key" /> value.
-    /// </returns>
-    /// <exception cref="DependencyInjectionException" />
-    public IDependency Get<TDependency>(string key) where TDependency : class
-        => Get(typeof(TDependency), key);
-
-    /// <summary>
-    /// Get the <see cref="IDependency" /> object for the given <paramref name="dependencyType" />
-    /// and <paramref name="key" /> value.
-    /// </summary>
-    /// <param name="dependencyType">
-    /// The type of dependency to be retrieved.
-    /// </param>
-    /// <param name="key">
-    /// An optional key used to identify the specific <see cref="IDependency" /> object to be
-    /// retrieved.
+    /// <param name="serviceKey">
+    /// The dependency <see cref="ServiceKey" /> used to retrieve the desired
+    /// <see cref="IDependency" /> object.
     /// </param>
     /// <returns>
     /// The <see cref="IDependency" /> instance corresponding to the given
     /// <paramref name="dependencyType" /> and <paramref name="key" /> value.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    public IDependency Get(Type dependencyType, string key)
+    public IDependency Get(ServiceKey serviceKey)
     {
-        ServiceKey serviceKey = ServiceKey.GetServiceKey(dependencyType, key);
-
         lock (_lock)
         {
             if (_dependencies.TryGetValue(serviceKey, out IDependency? dependency))
             {
                 if (dependency is null)
                 {
-                    string msg = FormatMessage(MsgNullDependencyObject, dependencyType, key);
+                    string msg = FormatMessage(MsgNullDependencyObject, serviceKey.Type, serviceKey.Key);
                     throw new DependencyInjectionException(msg);
                 }
 
@@ -115,7 +90,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
             }
             else
             {
-                string msg = FormatMessage(MsgDependencyMappingNotFound, dependencyType, key);
+                string msg = FormatMessage(MsgDependencyMappingNotFound, serviceKey.Type, serviceKey.Key);
                 throw new DependencyInjectionException(msg);
             }
         }

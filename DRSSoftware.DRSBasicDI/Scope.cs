@@ -3,8 +3,12 @@
 using DRSSoftware.DRSBasicDI.Interfaces;
 
 /// <summary>
-/// The <see cref="Scope" /> class manages the creation and disposing of scoped dependencies.
+/// The <see cref="Scope" /> class implements a basic dependency injection container for managing
+/// and resolving scoped dependencies.
 /// </summary>
+/// <remarks>
+/// Each <see cref="Scope" /> object manages scoped dependencies within a single dependency scope.
+/// </remarks>
 internal sealed class Scope : ContainerBase, IScope
 {
     /// <summary>

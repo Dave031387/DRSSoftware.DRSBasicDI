@@ -5,7 +5,7 @@ using System.Reflection;
 
 /// <summary>
 /// The <see cref="TypeExtensions" /> class extends the <see cref="Type" /> class by adding a couple
-/// methods that are used by the <see cref="DrsBasicDI" /> class library.
+/// methods that are used by the <see cref="DRSBasicDI" /> class library.
 /// </summary>
 internal static class TypeExtensions
 {
@@ -93,11 +93,15 @@ internal static class TypeExtensions
 
     /// <summary>
     /// An extension method for the <see cref="Type" /> class that returns the dependency injection
-    /// constructor info for the given <see cref="Type" />.
+    /// constructor info having the specified number of parameters for the given
+    /// <see cref="Type" />.
     /// </summary>
     /// <remarks>
-    /// If there is more than one constructor for the given class type, then the info for the first
-    /// constructor found having the specified number of parameters is returned.
+    /// If one of the matching constructors has been attributed with the
+    /// <see cref="DIConstructorAttribute" /> then the <see cref="ConstructorInfo" /> for that
+    /// constructor will be returned. <br /> Otherwise, if there is more than one constructor for
+    /// the given class type having the specified number of parameters, then the info for the last
+    /// constructor found will be returned.
     /// </remarks>
     /// <param name="type">
     /// The class type for which we want to retrieve the constructor info.
@@ -119,12 +123,27 @@ internal static class TypeExtensions
             throw new Exception(msg);
         }
 
-        foreach (ConstructorInfo constructorInfo in constructors)
+        int constructorIndex = -1;
+
+        for (int i = 0; i < constructors.Length; i++)
         {
-            if (constructorInfo.GetParameters().Length == parameterCount)
+            if (constructors[i].GetParameters().Length != parameterCount)
             {
-                return constructorInfo;
+                continue;
             }
+
+            constructorIndex = i;
+            DIConstructorAttribute? attribute = constructors[i].GetCustomAttribute<DIConstructorAttribute>();
+
+            if (attribute is not null)
+            {
+                break;
+            }
+        }
+
+        if (constructorIndex > -1)
+        {
+            return constructors[constructorIndex];
         }
 
         string msg2 = FormatMessage(MsgConstructorNotFound, resolvingType: type);
