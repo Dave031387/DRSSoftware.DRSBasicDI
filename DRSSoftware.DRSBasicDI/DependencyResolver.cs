@@ -36,7 +36,11 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <summary>
     /// Create a new instance of the <see cref="DependencyResolver" /> class.
     /// </summary>
-    internal DependencyResolver() : this(ServiceLocater.Instance)
+    /// <param name="key">
+    /// A <see langword="string"/> used to identify the specific <see cref="ServiceLocator"/>
+    /// instance to use in resolving dependencies.
+    /// </param>
+    internal DependencyResolver(string key) : this(ServiceLocator.GetInstance(key))
     {
     }
 
@@ -44,14 +48,14 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// Create a new instance of the <see cref="DependencyResolver" /> class. This constructor is
     /// intended for use in unit testing only.
     /// </summary>
-    /// <param name="serviceLocater">
-    /// A service locater object that should provide mock instances of the requested dependencies.
+    /// <param name="serviceLocator">
+    /// A service locator object that should provide mock instances of the requested dependencies.
     /// </param>
-    internal DependencyResolver(IServiceLocater serviceLocater)
+    internal DependencyResolver(IServiceLocator serviceLocator)
     {
-        DependencyList = serviceLocater.Get<IDependencyListConsumer>();
-        ObjectConstructor = serviceLocater.Get<IObjectConstructor>();
-        NonScopedService = serviceLocater.Get<IResolvingObjectsService>(NonScoped);
+        DependencyList = serviceLocator.Get<IDependencyListConsumer>();
+        ObjectConstructor = serviceLocator.Get<IObjectConstructor>();
+        NonScopedService = serviceLocator.Get<IResolvingObjectsService>(NonScoped);
     }
 
     /// <summary>
@@ -60,6 +64,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     private IDependencyListConsumer DependencyList
     {
         get;
+        init;
     }
 
     /// <summary>
@@ -69,6 +74,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     private IResolvingObjectsService NonScopedService
     {
         get;
+        init;
     }
 
     /// <summary>
@@ -77,6 +83,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     private IObjectConstructor ObjectConstructor
     {
         get;
+        init;
     }
 
     /// <summary>

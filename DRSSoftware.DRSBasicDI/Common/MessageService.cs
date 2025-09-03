@@ -12,20 +12,25 @@ internal static class MessageService
     internal const string MsgAbstractResolvingType = "The {0} for {1} must not be an abstract class type.";
     internal const string MsgCantAddToContainerAfterBuild = "Adding a dependency to the container after the container has already been built is not allowed.";
     internal const string MsgConstructorNotFound = "No constructor having the correct number of parameters could be found for {0}.";
+    internal const string MsgContainerAlreadyBuilt = "Invalid attempt to create more than one DI container.";
     internal const string MsgContainerCantBeBuiltMoreThanOnce = "The container has already been built. It can't be built again.";
     internal const string MsgContainerIsEmpty = "There must be at least one valid dependency defined before the dependency container can be built.";
+    internal const string MsgContainerNotBuilt = "Invalid attempt to access the DI container before it has been built.";
     internal const string MsgDependencyMappingNotFound = "No mapping exists for {0}.";
     internal const string MsgDependencyTypeAlreadySpecified = "Invalid attempt to assign dependency type more than once to {0}.";
     internal const string MsgDuplicateDependency = "The {0} has already been added to the container.";
+    internal const string MsgDuplicateService = "The {0} for {1} has already been registered in the service locator.";
     internal const string MsgErrorDuringConstruction = "An exception was thrown while trying to construct an instance of {0} for {1}.";
     internal const string MsgGenericDependencyTypeIsOpen = "Generic {0} must be fully constructed.";
     internal const string MsgIncompatibleResolvingType = "The {0} is not assignable to {1}.";
+    internal const string MsgInvalidContainerKey = "The container key must not be null or empty.";
     internal const string MsgInvalidDependencyType = "The {0} must be a class type or interface type.";
     internal const string MsgInvalidResolvingType = "The {0} for {1} must be a class type.";
     internal const string MsgLifetimeAlreadySpecified = "Invalid attempt to assign lifetime more than once to {0}.";
     internal const string MsgNoSuitableConstructors = "No suitable constructor could be found for {0}.";
     internal const string MsgNullDependencyObject = "Unexpected null dependency object returned for {0}.";
     internal const string MsgNullDependencyType = "Invalid attempt to assign a null value to the dependency type.";
+    internal const string MsgNullInstanceCreated = "A null instance was created by the service locator for {0}";
     internal const string MsgNullResolvingKey = "Invalid attempt to assign a null value to the resolving key for {0}.";
     internal const string MsgNullResolvingType = "Invalid attempt to assign a null value to the resolving type for {0}.";
     internal const string MsgResolveMethodInfoNotFound = "The attempt to retrieve the MethodInfo for the Resolve method failed.";
@@ -38,9 +43,10 @@ internal static class MessageService
     internal const string MsgScopedServiceAlreadySet = "The scoped resolving objects service has already been set in the scoped dependency resolver object.";
     internal const string MsgScopedServiceIsNull = "Invalid attempt to assign a null value to the scoped resolving objects service.";
     internal const string MsgScopedServiceSameAsNonScopedService = "The scoped resolving objects service must not be the same as the non-scoped service.";
-    internal const string MsgServiceNotRegistered = "No service has been registered in the Service Locater for {0}.";
-    internal const string MsgUnableToConstructService = "The Service Locater was unable to construct the service for {0}.";
+    internal const string MsgServiceNotRegistered = "No service has been registered in the Service Locator for {0}.";
+    internal const string MsgUnableToConstructService = "The Service Locator was unable to construct the service for {0}.";
     internal const string MsgUnableToMakeGenericResolveMethod = "Unable to create a generic Resolve method for {0}";
+    internal const string MsgUnableToObtainConstructor = "The service locator was unable to obtain the constructor for {0}";
     internal const string MsgUndefinedLifetime = "The {0} must not have an undefined lifetime.";
     internal const string MsgUnspecifiedDependencyType = "Unable to build a dependency having an unspecified dependency type.";
     internal const string MsgUnspecifiedResolvingType = "The {0} must not have an unspecified resolving type.";
@@ -118,6 +124,10 @@ internal static class MessageService
         {
             string resolvingTypeName = GetResolvingName(resolvingType);
             return string.Format(CultureInfo.InvariantCulture, message, resolvingTypeName);
+        }
+        else if (resolvingKey is not null)
+        {
+            return string.Format(CultureInfo.InvariantCulture, message, resolvingKey);
         }
         else
         {

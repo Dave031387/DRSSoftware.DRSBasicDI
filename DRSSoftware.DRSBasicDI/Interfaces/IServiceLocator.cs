@@ -1,9 +1,10 @@
 ﻿namespace DRSSoftware.DRSBasicDI.Interfaces;
 
 /// <summary>
-/// The <see cref="IServiceLocater" /> interface defines a method for getting a service from a service locater.
+/// The <see cref="IServiceLocator" /> interface defines a method for getting a service from a
+/// service locator.
 /// </summary>
-internal interface IServiceLocater
+internal interface IServiceLocator
 {
     /// <summary>
     /// Get an instance of the implementing class that is mapped to the given interface type
@@ -20,6 +21,6 @@ internal interface IServiceLocater
     /// An instance of the implementation type that has been mapped to the given interface type
     /// <typeparamref name="T" />.
     /// </returns>
-    /// <exception cref="ServiceLocaterException" />
+    /// <exception cref="ServiceLocatorException" />
     public T Get<T>(string key = EmptyKey) where T : class;
 }

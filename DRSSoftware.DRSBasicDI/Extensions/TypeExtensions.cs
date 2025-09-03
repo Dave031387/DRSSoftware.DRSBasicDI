@@ -55,7 +55,7 @@ internal static class TypeExtensions
     /// <returns>
     /// The <see cref="ConstructorInfo" /> object for the given class type.
     /// </returns>
-    /// <exception cref="Exception" />
+    /// <exception cref="InvalidOperationException" />
     internal static ConstructorInfo GetDIConstructorInfo(this Type type)
     {
         ConstructorInfo[] constructors = type.GetConstructors(ConstructorBindingFlags);
@@ -63,7 +63,7 @@ internal static class TypeExtensions
         if (constructors.Length < 1)
         {
             string msg = FormatMessage(MsgNoSuitableConstructors, resolvingType: type);
-            throw new Exception(msg);
+            throw new InvalidOperationException(msg);
         }
 
         int maxParameterCount = -1;
@@ -112,7 +112,7 @@ internal static class TypeExtensions
     /// <returns>
     /// The <see cref="ConstructorInfo" /> object for the given class type.
     /// </returns>
-    /// <exception cref="Exception" />
+    /// <exception cref="InvalidOperationException" />
     internal static ConstructorInfo GetDIConstructorInfo(this Type type, int parameterCount)
     {
         ConstructorInfo[] constructors = type.GetConstructors(ConstructorBindingFlags);
@@ -120,7 +120,7 @@ internal static class TypeExtensions
         if (constructors.Length < 1)
         {
             string msg = FormatMessage(MsgNoSuitableConstructors, resolvingType: type);
-            throw new Exception(msg);
+            throw new InvalidOperationException(msg);
         }
 
         int constructorIndex = -1;
@@ -147,7 +147,7 @@ internal static class TypeExtensions
         }
 
         string msg2 = FormatMessage(MsgConstructorNotFound, resolvingType: type);
-        throw new Exception(msg2);
+        throw new InvalidOperationException(msg2);
     }
 
     /// <summary>

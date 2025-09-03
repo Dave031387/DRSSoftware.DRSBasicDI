@@ -1,7 +1,4 @@
 # DRSBasicDI Dependency Injection Container
-## Overview
-The ***DRSBasicDI*** class library is a simple and lightweight dependency injection container designed for .NET applications. It provides a
-straightforward way to manage object lifetimes and dependencies, making it easier to build maintainable and testable applications.
 
 ## Background
 I started this project as a way to learn more about dependency injection and how to implement it in a .NET application. I wanted to create a simple
@@ -17,18 +14,47 @@ basic implementation that could meet the needs of moderately complex projects.
 - **Thread-Safe**: The container is designed to be thread-safe, ensuring that it can be used in multi-threaded environments without issues.
 - **Unit Tested**: The library includes unit tests to ensure the correctness and reliability of the implementation.
 
+## Overview
+The ***DRSBasicDI*** class library is a simple and lightweight dependency injection container designed for .NET applications. It provides a
+straightforward way to manage object lifetimes and dependencies, making it easier to build maintainable and testable applications. The class library
+API is made up of two public classes and three public interfaces.
+
+Public classes:
+- **ContainerBuilder**: used for building the dependency injection container.
+- **DependencyBuilder**: used within the ***ContainerBuilder*** class to build the ***Dependency*** objects that will be used to control how
+  dependencies will be instantiated by the dependency injection container.
+
+Public interfaces:
+- **IContainerBuilder**: defines methods used for adding ***Dependency*** objects to the dependency injection container. Also defines the ***Build***
+  method used for building the final dependency injection container.
+- **IContainer**: defines the ***Resolve*** methods of the dependency injection container used for resolving dependencies. Also defines the
+  ***CreateScope*** method for creating new dependency scopes.
+- **IScope**: defines the ***Resolve*** methods used by the ***Scope*** object for resolving scoped dependencies.
+
+In addition to the public classes and interfaces, there are two public attributes:
+- **DIConstructorAttribute**: used to designate one constructor of a class as the constructor to be used by the dependency injection container when
+  resolving dependencies. (Useful when there are multiple constructors that could be used.)
+- **ResolvingKeyAttribute**: used to assign an optional resolving key value to one or more constructor parameters. (Useful when there is more than one
+  possible implementation for a single dependency type.)
+
+Finally, there is a ***DependencyLifetime*** enum that can be used to specify the lifetime of each dependency. This enum can have any of the following
+values:
+- **Undefined**: the lifetime is undefined. This is used only internally by the class library. All valid dependencies must have one of the following
+  lifetimes.
+- **Singleton**: only one instance of the resolved dependency will be instantiated for the duration of the program execution.
+- **Scoped**: only one instance of the resolved dependency will be instantiated within any given dependency scope.
+- **Transient**: a new instance of the resolved dependency will be instantiated each time it is requested.
+
+All of these components will be described more fully in the sections that follow.
+
 ## The ***ContainerBuilder*** Class
 The ***ContainerBuilder*** class is the main entry point for configuring the dependency injection container. It provides methods for registering
 services, specifying their lifetimes, and building the container. The builder pattern is used to create a fluent API that allows for easy chaining of
-methods. The ***ContainerBuilder*** class is designed to be simple and intuitive, making it easy for developers to configure their services without
-the need for extensive documentation or examples. The builder pattern allows for a clean and readable syntax, enabling developers to focus on the
-configuration of their services rather than the underlying implementation details.
+methods.
 
 ### Retrieving an Instance of the ***ContainerBuilder*** Class
-To retrieve an instance of the ***ContainerBuilder*** class, you can use the static method ***Instance***. This method returns a singleton instance of
-the ***ContainerBuilder*** class, which can then be used to configure the container. The ***Instance*** method is a static factory method that
-provides a convenient way to get the ***ContainerBuilder*** class without the need for a constructor. This approach allows for a more streamlined and
-readable syntax when configuring the container, as developers can chain method calls directly after calling ***Instance***.
+To retrieve an instance of the ***ContainerBuilder*** class, you must use the static ***Instance*** method. This method returns a singleton instance of
+the ***ContainerBuilder*** class, which can then be used to configure the container.
 
 > [!NOTE]
 > *The **Instance** method actually returns an **IContainerBuilder** interface object. This provides a level of abstraction between the user's source
@@ -52,7 +78,7 @@ registering services that don't require the use of a resolving key:
 - ***AddTransient<TDependency, TResolving>()***: Registers a service with a transient lifetime. A new instance of the service will be created each
   time it is requested.
 - ***AddSingleton<TDependency, TResolving>()***: Registers a service with a singleton lifetime. A new instance of the service will be created the
-  first time it is requested and then that same instance will be returned every time the services is requested thereafter. The instance will remain
+  first time it is requested and then that same instance will be returned every time the service is requested thereafter. The instance will remain
   alive until the end of the program execution.
 - ***AddScoped<TDependency, TResolving>()***: Registers a service with a scoped lifetime. A new instance of the service will be created the first time
   it is requested within a given scope. That same instance will be returned on subsequent requests for that same service within the same scope. Each
@@ -80,10 +106,136 @@ There are a few things to take note of in this example:
 - The chain of method calls ends with a call to the ***Build()*** method. This method creates an instance of the ***Container*** class, which is the
   actual dependency injection container that will be used to resolve dependencies. (The class is returned to the user as an **IContainer** interface
   object.)
-- Once the container is built it can't be altered. This means that you can't add or remove services after the container has been built. This is a
-  design decision that helps to ensure the integrity of the container and prevents accidental changes to the configuration after it has been set up.
+- Once the container is built it can't be altered. This means that you can't add, remove or modify services after the container has been built. This
+  is a design decision that helps to ensure the integrity of the container and prevents accidental changes to the configuration after it has been set
+  up.
 - The ***ContainerBuilder*** is of no further use after the container has been built. In other words, you can't use the ***ContainerBuilder*** to
   build another container or to alter the existing one.
+
+### More Ways to Register Services
+The three methods mentioned in the previous section will likely be all that most people will need. However, the ***DRSBasicDI*** class library offers
+several other methods that provide flexibility and additional features. The following is a complete list of those additional methods:
+
+- **AddDependency(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddDependency\<TDependency>(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddDependency\<TDependency, TResolving>(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddScoped(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddScoped\<TDependency>(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddScoped\<TDependency, TResolving>(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddSingleton(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddSingleton\<TDependency>(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddSingleton\<TDependency, TResolving>(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddTransient(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddTransient\<TDependency>(Func\<DependencyBuilder, DependencyBuilder> builder)**
+- **AddTransient\<TDependency, TResolving>(Func\<DependencyBuilder, DependencyBuilder> builder)**
+
+Each of the methods above take a single parameter that is a delegate that takes a **DependencyBuilder*** object and returns that same
+***DependencyBuilder*** object after it has been updated. The ***DependencyBuilder*** object is updated by chaining one or more of the following
+method calls off the delegate:
+
+- **WithDependencyType\<TDependency>()** - assigns the specified *TDependency* type to the *DependencyType* property of the ***Dependency*** object
+  that is being built.
+- **WithDependencyType(Type dependencyType)** - assigns the specified *dependencyType* to the *DependencyType* property of the ***Dependency*** object
+  that is being built.
+- **WithLifetime(DependencyLifetime lifetime)** - assigns the specified *lifetime* to the *Lifetime* property of the ***Dependency*** object that is
+  being built.
+- **WithResolvingKey(string resolvingKey)** - assigns the specified *resolvingKey* to the *ResolvingKey* property of the ***Dependency*** object that
+  is being built.
+- **WithResolvingType\<TResolving>()** - assigns the specified *TResolving* type to the *ResolvingType* property of the ***Dependency*** object that
+  is being built.
+- **WithResolvingType(Type resolvingType)** - assigns the specified *resolvingType* to the *ResolvingType* property of the ***Dependency*** object
+  that is being built.
+
+Before going further we need to understand the requirements of a valid ***Dependency*** object. Each such object must have a defined dependency type,
+resolving type, and lifetime. The ***Dependency*** object may also specify an optional resolving key. The various *Add...* methods mentioned above
+supply none, one, two, or all three of the required properties. The *With...* methods are used to supply any missing required properties as well as
+the optional resolving key value if needed.
+
+The following example illustrates all the ways we can register a dependency having these properties:
+- The *DependencyType* is an interface named ***IMyService***.
+- The *ResolvingType* is a concrete class type named ***MyService*** that implements the ***IMyService*** interface.
+- The dependency lifetime should be ***Transient***.
+- The dependency uses a resolving key whose value is ***"Test"***.
+
+```csharp
+// Variation 1
+IContainerBuilder container = ContainerBuilder.Instance
+    .AddDependency(builder => builder
+        .WithDependencyType<IMyService>()
+        .WithResolvingType<MyService>()
+        .WithLifetime(DependencyLifetime.Transient)
+        .WithResolvingKey("Test"))
+    .Build()
+
+// Variation 2
+IContainerBuilder container = ContainerBuilder.Instance
+    .AddDependency<IMyService>(builder => builder
+        .WithResolvingType<MyService>()
+        .WithLifetime(DependencyLifetime.Transient)
+        .WithResolvingKey("Test"))
+    .Build()
+
+// Variation 3
+IContainerBuilder container = ContainerBuilder.Instance
+    .AddDependency<IMyService, MyService>(builder => builder
+        .WithLifetime(DependencyLifetime.Transient)
+        .WithResolvingKey("Test")
+    .Build()
+
+// Variation 4
+IContainerBuilder container = ContainerBuilder.Instance
+    .AddTransient(builder => builder
+        .WithDependencyType<IMyService>()
+        .WithResolvingType<MyService>()
+        .WithResolvingKey("Test"))
+    .Build()
+
+// Variation 5
+IContainerBuilder container = ContainerBuilder.Instance
+    .AddTransient<IMyService>(builder => builder
+        .WithResolvingType<MyService>()
+        .WithResolvingKey("Test"))
+    .Build()
+
+// Variation 6
+IContainerBuilder container = ContainerBuilder.Instance
+    .AddTransient<IMyService, MyService>(builder => builder
+        .WithResolvingKey("Test"))
+    .Build()
+```
+
+Each variation in the above example defines the exact same ***Dependency*** object. The user is free to use whichever variation they prefer. Although,
+variation 6 should probably be preferred since it is the simplest and requires the least amount of typing.
+
+### Dependency Build Rules
+Each dependency (service) that is registered must conform to the following rules:
+
+- Each service must have a defined dependency type, resolving type, and lifetime. Optionally, they may also specify a resolving key.
+- Each property of a service must be specified only once. For example, the following code would result in an exception because the dependency type is
+  specified both by the generic type parameter on the ***AddSingleton*** method and by the ***WithDependencyType*** method:
+
+  ```csharp
+    using DRSSoftware.DRSBasicDI;
+    IContainer container = ContainerBuilder.Instance
+        .AddSingleton<IMyService>(builder => builder
+            .WithDependencyType(typeof(IMyService))
+            .WithResolvingType<MyService>())
+        .Build();
+  ```
+
+- No two services can have the same dependency type and resolving key.
+- The dependency type of the service must be an interface type, a concrete class type, or a fully-constructed generic type (valid type values must be
+  assigned to all generic type parameters). Abstract class types are not supported.
+- The dependency lifetime must not be undefined. It must be explicitly set to one of the valid values (***DependencyLifetime.Transient***,
+  ***DependencyLifetime.Singleton***, or ***DependencyLifetime.Scoped***).
+- The resolving key, if specified, must be a valid string value. It must not be null or empty. (The empty string is reserved for internal use by the
+  class library to denote "no resolving key".)
+- The resolving type of the service must be a concrete class type or a fully-constructed generic type (valid type values must be assigned to all
+  generic type parameters). Abstract class types are not supported.
+- The resolving type of the service must be assignable to the dependency type. This means that the resolving type must implement the dependency type
+  either through an interface or through inheritance.
+
+Any violation of the above rules will result in a ***DependencyBuildException*** being thrown.
 
 ### Specifying a Resolving Key
 The ***ContainerBuilder*** class also provides methods for registering services that require a resolving key. The following
@@ -167,102 +319,6 @@ One other thing to note is that services that are registered without the ***With
 That is why in the example we don't need to call the ***WithResolvingKey*** method for the ***AddScoped*** method even though we are registering
 another implementation of the ***IMyService*** interface. The ***AddScoped*** method will automatically use the empty string as the resolving key
 unless we specify otherwise.
-
-### Other Methods for Registering Services
-The methods mentioned above should be able to meet most all of your service registration needs. However, there are a few other methods that are
-provided for convenience. These methods are not as commonly used, but they can be helpful in certain situations. The following methods are available:
-
-- ***AddDependency(Func<DependencyBuilder, DependencyBuilder> builder)***
-- ***AddDependency\<TDependency>(Func<DependencyBuilder, DependencyBuilder> builder)***
-- ***AddDependency\<TDependency, TResolving>(Func<DependencyBuilder, DependencyBuilder> builder)***
-- ***AddScoped(Func<DependencyBuilder, DependencyBuilder> builder)***
-- ***AddScoped\<TDependency>(Func<DependencyBuilder, DependencyBuilder> builder)***
-- ***AddSingleton(Func<DependencyBuilder, DependencyBuilder> builder)***
-- ***AddSingleton\<TDependency>(Func<DependencyBuilder, DependencyBuilder> builder)***
-- ***AddTransient(Func<DependencyBuilder, DependencyBuilder> builder)***
-- ***AddTransient\<TDependency>(Func<DependencyBuilder, DependencyBuilder> builder)***
-
-In addition, the ***DependencyBuilder*** class provides additional methods for defining the properties of the service being registered. The complete
-list of methods includes:
-
-- ***WithDependencyType(Type dependencyType)***: Specifies the dependency type (service type) for the service being registered.
-- ***WithDependencyType\<TDependency>()***: Specifies the dependency type (service type) for the service being registered. (Same as the previous
-  method, but using a generic type parameter.)
-- ***WithFactory(Func\<object> factory)***: Specifies a factory method that will be used to create the instance of the service.
-- ***WithLifetime(DependencyLifetime lifetime)***: Specifies the lifetime of the service being registered. The lifetime can be one of the following:
-  - ***DependencyLifetime.Transient***: A new instance of the service will be created each time it is requested.
-  - ***DependencyLifetime.Singleton***: A single instance of the service will be created and shared across all requests.
-  - ***DependencyLifetime.Scoped***: A new instance of the service will be created for each scope, and the same instance will be shared within that
-    scope.
-- ***WithResolvingKey(string resolvingKey)***: Specifies a resolving key that can be used to resolve the service, allowing multiple implementations of
-  the same service type.
-- ***WithResolvingType(Type resolvingType)***: Specifies the resolving type (implementation type) for the service being registered.
-- ***WithResolvingType\<TResolving>()***: Specifies the resolving type (implementation type) for the service being registered. (Same
-  as the previous method, but using a generic type parameter.)
-
-The following example illustrates the use of these methods:
-
-```csharp
-using DRSSoftware.DRSBasicDI;
-
-public interface IMyService
-{
-    string Name { get; }
-}
-
-public class MyService : IMyService
-{
-    public MyService(string name)
-    {
-        Name = name;
-    }
-
-    public string Name { get; }
-}
-
-private Type _myServiceType = typeof(IMyService);
-private Type _implementationType = typeof(MyService);
-
-IContainer container = ContainerBuilder.Instance
-    .AddDependency(builder => builder
-        .WithDependencyType(_myServiceType)
-        .WithLifetime(DependencyLifetime.Transient)
-        .WithResolvingType<MyService>())
-    .AddSingleton<IMyService>(builder => builder
-        .WithResolvingKey("Test1")
-        .WithResolvingType(_implementationType))
-    .Build();
-```
-
-### Dependency Build Rules
-Each dependency (service) that is registered must conform to the following rules:
-
-- Each service must have a defined dependency type, resolving type, and lifetime. Optionally, they may also specify a resolving key.
-- Each property of a service must be specified only once. For example, the following code would result in an exception because the dependency type is
-  specified both by the generic type parameter on the ***AddSingleton*** method and by the ***WithDependencyType*** method:
-
-  ```csharp
-    using DRSSoftware.DRSBasicDI;
-    IContainer container = ContainerBuilder.Instance
-        .AddSingleton<IMyService>(builder => builder
-            .WithDependencyType(typeof(IMyService))
-            .WithResolvingType<MyService>())
-        .Build();
-  ```
-
-- No two services can have the same dependency type and resolving key.
-- The dependency type of the service must be an interface type, a concrete class type, or a fully-constructed generic type (valid type values must be
-  assigned to all generic type parameters). Abstract class types are not supported.
-- The dependency lifetime must not be undefined. It must be explicitly set to one of the valid values (***DependencyLifetime.Transient***,
-  ***DependencyLifetime.Singleton***, or ***DependencyLifetime.Scoped***).
-- The resolving key, if specified, must be a valid string value. It must not be null or empty. (The empty string is reserved for internal use by the
-  class library to denote "no resolving key".)
-- The resolving type of the service must be a concrete class type or a fully-constructed generic type (valid type values must be assigned to all
-  generic type parameters). Abstract class types are not supported.
-- The resolving type of the service must be assignable to the dependency type. This means that the resolving type must implement the dependency type
-  either through an interface or through inheritance.
-
-Any violation of the above rules will result in a ***DependencyBuildException*** being thrown.
 
 ## The ***Container*** Class
 Compared to the ***ContainerBuilder*** class, the ***Container*** class is much simpler. It is the actual dependency injection container that is used

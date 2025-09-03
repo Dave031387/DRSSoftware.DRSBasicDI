@@ -14,20 +14,24 @@ internal sealed class Scope : ContainerBase, IScope
     /// <summary>
     /// Create a new instance of the <see cref="Scope" /> class.
     /// </summary>
-    internal Scope() : this(ServiceLocater.Instance)
+    /// <param name="key">
+    /// A <see langword="string"/> used to identify the specific <see cref="ServiceLocator"/>
+    /// instance to use in resolving dependencies.
+    /// </param>
+    internal Scope(string key) : this(ServiceLocator.GetInstance(key))
     {
     }
 
     /// <summary>
     /// Constructor for the <see cref="Scope" /> class. Intended for unit testing only.
     /// </summary>
-    /// <param name="serviceLocater">
-    /// A service locater object that should provide mock instances of the requested dependencies.
+    /// <param name="serviceLocator">
+    /// A service locator object that should provide mock instances of the requested dependencies.
     /// </param>
-    internal Scope(IServiceLocater serviceLocater)
+    internal Scope(IServiceLocator serviceLocator)
     {
-        DependencyResolver = serviceLocater.Get<IDependencyResolver>(Scoped);
-        IResolvingObjectsService resolvingObjectsService = serviceLocater.Get<IResolvingObjectsService>(Scoped);
+        DependencyResolver = serviceLocator.Get<IDependencyResolver>(Scoped);
+        IResolvingObjectsService resolvingObjectsService = serviceLocator.Get<IResolvingObjectsService>(Scoped);
         DependencyResolver.SetScopedService(resolvingObjectsService);
     }
 }

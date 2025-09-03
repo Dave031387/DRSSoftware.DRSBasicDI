@@ -24,7 +24,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     /// <summary>
     /// Create a new instance of the <see cref="DependencyList" /> class.
     /// </summary>
-    internal DependencyList()
+    internal DependencyList(string _)
     {
         Dependency containerDependency = new(typeof(IContainer),
                                              typeof(Container),
@@ -49,16 +49,20 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     {
         ServiceKey serviceKey = dependency.DependencyServiceKey;
 
-        lock (_lock)
+        if (!_dependencies.ContainsKey(serviceKey))
         {
-            if (_dependencies.ContainsKey(serviceKey))
+            lock (_lock)
             {
-                string msg = FormatMessage(MsgDuplicateDependency, dependency.DependencyType, dependency.Key);
-                throw new ContainerBuildException(msg);
+                if (!_dependencies.ContainsKey(serviceKey))
+                {
+                    _dependencies[serviceKey] = dependency;
+                    return;
+                }
             }
-
-            _dependencies[serviceKey] = dependency;
         }
+
+        string msg = FormatMessage(MsgDuplicateDependency, dependency.DependencyType, dependency.Key);
+        throw new ContainerBuildException(msg);
     }
 
     /// <summary>

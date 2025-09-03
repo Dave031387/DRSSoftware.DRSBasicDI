@@ -15,7 +15,7 @@ internal abstract class ContainerBase : IContainerBase
     protected IDependencyResolver DependencyResolver
     {
         get;
-        set;
+        init;
     } = null!;
 
     /// <summary>

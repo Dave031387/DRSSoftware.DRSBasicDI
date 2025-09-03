@@ -235,8 +235,7 @@ public sealed class DependencyBuilder
         // The dependency type must not be null.
         if (_dependencyType is null)
         {
-            string msg = MsgUnspecifiedDependencyType;
-            throw new DependencyBuildException(msg);
+            throw new DependencyBuildException(MsgUnspecifiedDependencyType);
         }
 
         // The dependency type must be a class type or interface type.

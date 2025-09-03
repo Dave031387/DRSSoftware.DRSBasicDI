@@ -12,7 +12,7 @@ internal sealed class ObjectConstructor : IObjectConstructor
     /// <summary>
     /// Constructs a new instance of the <see cref="ObjectConstructor" /> class.
     /// </summary>
-    internal ObjectConstructor()
+    internal ObjectConstructor(string _)
     {
     }
 

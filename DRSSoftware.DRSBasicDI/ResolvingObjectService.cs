@@ -22,7 +22,11 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// <summary>
     /// Create an instance of the <see cref="ResolvingObjectsService" /> class.
     /// </summary>
-    internal ResolvingObjectsService() : this(ServiceLocater.Instance)
+    /// <param name="key">
+    /// A <see langword="string"/> used to identify the specific <see cref="ServiceLocator"/>
+    /// instance to use in resolving dependencies.
+    /// </param>
+    internal ResolvingObjectsService(string key) : this(ServiceLocator.GetInstance(key))
     {
     }
 
@@ -30,11 +34,11 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// Constructor for the <see cref="ResolvingObjectsService" /> class. Intended for unit testing
     /// only.
     /// </summary>
-    /// <param name="serviceLocater">
-    /// A service locater object that should provide mock instances of the requested dependencies.
+    /// <param name="serviceLocator">
+    /// A service locator object that should provide mock instances of the requested dependencies.
     /// </param>
-    internal ResolvingObjectsService(IServiceLocater serviceLocater)
-        => DependencyList = serviceLocater.Get<IDependencyListConsumer>();
+    internal ResolvingObjectsService(IServiceLocator serviceLocator)
+        => DependencyList = serviceLocator.Get<IDependencyListConsumer>();
 
     /// <summary>
     /// Get a reference to the <see cref="IDependencyListConsumer" /> object.
@@ -42,6 +46,7 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     private IDependencyListConsumer DependencyList
     {
         get;
+        init;
     }
 
     /// <summary>
@@ -69,21 +74,20 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     {
         ServiceKey serviceKey = new(typeof(TDependency), key);
         IDependency dependency = DependencyList.Get(serviceKey);
+        ServiceKey resolvingServiceKey = dependency.ResolvingServiceKey;
 
-        lock (_lock)
+        if (!_resolvingObjects.ContainsKey(resolvingServiceKey))
         {
-            if (TryGetResolvingObject(out TDependency? value, dependency.ResolvingServiceKey))
+            lock (_lock)
             {
-                // If we get here then a resolving object for the given dependency type has already
-                // been added to the container and the resolving object that was added isn't null.
-                return value!;
+                if (!_resolvingObjects.ContainsKey(resolvingServiceKey))
+                {
+                    _resolvingObjects[resolvingServiceKey] = resolvingObject;
+                }
             }
-
-            // If we get here then a resolving object hasn't yet been added to the container for the
-            // given dependency type.
-            _resolvingObjects[dependency.ResolvingServiceKey] = resolvingObject;
-            return resolvingObject;
         }
+
+        return (TDependency)_resolvingObjects[resolvingServiceKey];
     }
 
     /// <summary>
@@ -126,40 +130,12 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// </returns>
     public bool TryGetResolvingObject<TDependency>(out TDependency? resolvingObject, IDependency dependency) where TDependency : class
     {
-        lock (_lock)
-        {
-            return TryGetResolvingObject(out resolvingObject, dependency.ResolvingServiceKey);
-        }
-    }
+        ServiceKey resolvingServiceKey = dependency.ResolvingServiceKey;
 
-    /// <summary>
-    /// Check to see if the specified dependency type has been resolved and, if it has, return the
-    /// resolving object.
-    /// </summary>
-    /// <typeparam name="TDependency">
-    /// The dependency type whose resolving object is to be retrieved.
-    /// </typeparam>
-    /// <param name="resolvingObject">
-    /// The resolved dependency object, or <see langword="null" /> if the dependency type hasn't yet
-    /// been resolved.
-    /// </param>
-    /// <param name="serviceKey">
-    /// The service key used to identify the specific <paramref name="resolvingObject" /> to be
-    /// returned.
-    /// </param>
-    /// <returns>
-    /// <see langword="true" /> if the given dependency type has been resolved, otherwise
-    /// <see langword="false" />.
-    /// </returns>
-    private bool TryGetResolvingObject<TDependency>(out TDependency? resolvingObject, ServiceKey serviceKey) where TDependency : class
-    {
-        if (_resolvingObjects.TryGetValue(serviceKey, out object? value))
+        if (_resolvingObjects.TryGetValue(resolvingServiceKey, out object? value))
         {
-            if (value is not null)
-            {
-                resolvingObject = (TDependency)value;
-                return true;
-            }
+            resolvingObject = value as TDependency;
+            return true;
         }
 
         resolvingObject = null;

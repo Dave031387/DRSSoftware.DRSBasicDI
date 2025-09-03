@@ -11,6 +11,14 @@
 public interface IContainer : IContainerBase
 {
     /// <summary>
+    /// Gets a <see langword="string"/> value used to identify this specific <see cref="IContainer" /> instance.
+    /// </summary>
+    string ContainerKey
+    {
+        get;
+    }
+
+    /// <summary>
     /// Create a new <see cref="IScope" /> object to be used in managing a dependency scope.
     /// </summary>
     /// <returns>

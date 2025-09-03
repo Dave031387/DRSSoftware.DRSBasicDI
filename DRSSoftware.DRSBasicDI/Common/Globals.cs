@@ -36,7 +36,7 @@ internal static class Globals
     internal const string DoubleFriendlyName = "double";
 
     /// <summary>
-    /// A constant representing an empty resolving key value.
+    /// A constant representing an empty key value.
     /// </summary>
     internal const string EmptyKey = "";
 

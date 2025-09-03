@@ -7,6 +7,14 @@
 public interface IContainerBuilder
 {
     /// <summary>
+    /// Gets the key value used to identify this specific <see cref="ContainerBuilder" /> instance.
+    /// </summary>
+    public string ContainerKey
+    {
+        get;
+    }
+
+    /// <summary>
     /// Construct a new <see cref="IDependency" /> object and add it to the container.
     /// </summary>
     /// <param name="builder">

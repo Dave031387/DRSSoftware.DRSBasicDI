@@ -8,15 +8,29 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 /// </summary>
 /// <remarks>
 /// Once the <see cref="Build" /> method has been called, any other method calls other than
-/// <see cref="GetTestInstance(IServiceLocater)" /> will result in a
+/// <see cref="GetTestInstance(IServiceLocator)" /> will result in a
 /// <see cref="ContainerBuildException" /> being thrown.
 /// </remarks>
 public sealed class ContainerBuilder : IContainerBuilder
 {
     /// <summary>
-    /// A lazy initializer for the singleton instance of the <see cref="ContainerBuilder" /> object.
+    /// A dictionary of <see cref="IContainerBuilder" /> objects.
     /// </summary>
-    private static readonly Lazy<ContainerBuilder> _lazy = new(static () => new ContainerBuilder());
+    private static readonly Dictionary<string, IContainerBuilder> _builders = [];
+
+    /// <summary>
+    /// A lock object used to ensure thread safety.
+    /// </summary>
+    private static readonly object _lock = new();
+
+    /// <summary>
+    /// Represents the count of test containers currently in use.
+    /// </summary>
+    /// <remarks>
+    /// This field is used to track the number of test containers. It is intended for internal use
+    /// only.
+    /// </remarks>
+    private static int _testContainerCount = 0;
 
     /// <summary>
     /// A boolean flag that gets set to <see langword="true" /> once the <see cref="IContainer" />
@@ -27,41 +41,52 @@ public sealed class ContainerBuilder : IContainerBuilder
     /// <summary>
     /// Default constructor for the <see cref="ContainerBuilder" /> class.
     /// </summary>
+    /// <param name="containerKey">
+    /// An optional key for identifying the specific instance of the <see cref="ContainerBuilder" />
+    /// that is being used.
+    /// </param>
     /// <remarks>
     /// This constructor is declared <see langword="private" />. Use the static
     /// <see cref="Instance" /> property to create a new, empty <see cref="ContainerBuilder" />
     /// object.
     /// </remarks>
-    private ContainerBuilder() : this(DRSBasicDI.ServiceLocater.Instance)
+    private ContainerBuilder(string containerKey)
+        : this(DRSBasicDI.ServiceLocator.GetInstance(containerKey), containerKey)
     {
     }
 
     /// <summary>
     /// Create a new instance of the <see cref="ContainerBuilder" /> class using the specified
-    /// <paramref name="serviceLocater" /> object. This constructor is intended for unit testing
-    /// only.
+    /// <paramref name="serviceLocator" /> object and <paramref name="containerKey" />. This
+    /// constructor is intended for unit testing only.
     /// </summary>
-    /// <param name="serviceLocater">
-    /// A service locater object that should provide mock instances of the requested dependencies.
+    /// <param name="serviceLocator">
+    /// A service locator object that should provide mock instances of the requested dependencies.
+    /// </param>
+    /// <param name="containerKey">
+    /// An optional key for identifying the specific instance of the <see cref="ContainerBuilder" />
+    /// that is being used.
     /// </param>
     /// <remarks>
     /// This constructor is declared <see langword="private" />. Use the static
-    /// <see cref="GetTestInstance(IServiceLocater)" /> method to create a new, empty
+    /// <see cref="GetTestInstance(IServiceLocator)" /> method to create a new, empty
     /// <see cref="IContainerBuilder" /> object for testing purposes.
     /// </remarks>
-    private ContainerBuilder(IServiceLocater serviceLocater)
+    private ContainerBuilder(IServiceLocator serviceLocator, string containerKey)
     {
-        ServiceLocater = serviceLocater;
-        DependencyList = ServiceLocater.Get<IDependencyListBuilder>();
+        ServiceLocator = serviceLocator;
+        DependencyList = ServiceLocator.Get<IDependencyListBuilder>();
+        ContainerKey = containerKey;
     }
 
     /// <summary>
-    /// Get the <see cref="IContainerBuilder" /> instance.
+    /// Gets the key value used to identify this specific <see cref="ContainerBuilder" /> instance.
     /// </summary>
-    /// <remarks>
-    /// This returns a thread safe singleton instance of the <see cref="ContainerBuilder" /> class.
-    /// </remarks>
-    public static IContainerBuilder Instance => _lazy.Value;
+    public string ContainerKey
+    {
+        get;
+        private init;
+    }
 
     /// <summary>
     /// Get a reference to the <see cref="IDependencyListBuilder" /> object.
@@ -69,14 +94,57 @@ public sealed class ContainerBuilder : IContainerBuilder
     private IDependencyListBuilder DependencyList
     {
         get;
+        init;
     }
 
     /// <summary>
-    /// Get a reference to the <see cref="IServiceLocater" /> object.
+    /// Get a reference to the <see cref="IServiceLocator" /> object.
     /// </summary>
-    private IServiceLocater ServiceLocater
+    private IServiceLocator ServiceLocator
     {
         get;
+        init;
+    }
+
+    /// <summary>
+    /// Retrieves an instance of <see cref="IContainerBuilder" /> associated with the specified
+    /// <paramref name="containerKey" />.
+    /// </summary>
+    /// <remarks>
+    /// This method is thread-safe. If multiple threads attempt to retrieve an instance for the same
+    /// <paramref name="containerKey" /> simultaneously, only one instance will be created.
+    /// </remarks>
+    /// <param name="containerKey">
+    /// The key used to identify the <see cref="IContainerBuilder" /> instance. If not provided, a
+    /// default key is used.
+    /// </param>
+    /// <returns>
+    /// An instance of <see cref="IContainerBuilder" /> associated with the specified key. If no
+    /// instance exists for the key, a new instance is created and returned.
+    /// </returns>
+    /// <exception cref="ContainerBuildException">
+    /// An exception is thrown if the <paramref name="containerKey" /> value is
+    /// <see langword="null" /> or empty.
+    /// </exception>
+    public static IContainerBuilder GetInstance(string containerKey = EmptyKey)
+    {
+        if (string.IsNullOrEmpty(containerKey))
+        {
+            throw new ContainerBuildException(MsgInvalidContainerKey);
+        }
+
+        if (!_builders.ContainsKey(containerKey))
+        {
+            lock (_lock)
+            {
+                if (!_builders.ContainsKey(containerKey))
+                {
+                    _builders[containerKey] = new ContainerBuilder(containerKey);
+                }
+            }
+        }
+
+        return _builders[containerKey];
     }
 
     /// <summary>
@@ -492,12 +560,10 @@ public sealed class ContainerBuilder : IContainerBuilder
         // unless the DependencyList contains at least two entries.
         if (DependencyList.Count < 2)
         {
-            string msg = MsgContainerIsEmpty;
-            throw new ContainerBuildException(msg);
+            throw new ContainerBuildException(MsgContainerIsEmpty);
         }
 
-        IContainer container = ServiceLocater.Get<IContainer>();
-
+        IContainer container = ServiceLocator.Get<IContainer>();
         _containerHasBeenBuilt = true;
         return container;
     }
@@ -505,8 +571,12 @@ public sealed class ContainerBuilder : IContainerBuilder
     /// <summary>
     /// Get a new test instance of the <see cref="IContainerBuilder" /> object.
     /// </summary>
-    /// <param name="serviceLocater">
-    /// A service locater object that should provide mock instances of the requested dependencies.
+    /// <param name="serviceLocator">
+    /// A service locator object that should provide mock instances of the requested dependencies.
+    /// </param>
+    /// <param name="containerKey">
+    /// An optional key used for identifying the specific instance of the
+    /// <see cref="ContainerBuilder" /> class.
     /// </param>
     /// <remarks>
     /// Please note that this method doesn't return a singleton instance. Each call to this method
@@ -515,8 +585,14 @@ public sealed class ContainerBuilder : IContainerBuilder
     /// <returns>
     /// An instance of the <see cref="IContainerBuilder" /> object to be used for unit testing.
     /// </returns>
-    internal static IContainerBuilder GetTestInstance(IServiceLocater serviceLocater)
-        => new ContainerBuilder(serviceLocater);
+    internal static IContainerBuilder GetTestInstance(IServiceLocator serviceLocator)
+    {
+        lock (_lock)
+        {
+            string containerKey = $"ContainerBuilderTest_{++_testContainerCount}";
+            return new ContainerBuilder(serviceLocator, containerKey);
+        }
+    }
 
     /// <summary>
     /// Check to see if the <see cref="IContainer" /> object has already been built. Throw an
