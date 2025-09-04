@@ -124,13 +124,13 @@ public sealed class ContainerBuilder : IContainerBuilder
     /// </returns>
     /// <exception cref="ContainerBuildException">
     /// An exception is thrown if the <paramref name="containerKey" /> value is
-    /// <see langword="null" /> or empty.
+    /// <see langword="null" />.
     /// </exception>
     public static IContainerBuilder GetInstance(string containerKey = EmptyKey)
     {
-        if (string.IsNullOrEmpty(containerKey))
+        if (containerKey is null)
         {
-            throw new ContainerBuildException(MsgInvalidContainerKey);
+            throw new ContainerBuildException(MsgNullContainerKey);
         }
 
         if (!_builders.ContainsKey(containerKey))

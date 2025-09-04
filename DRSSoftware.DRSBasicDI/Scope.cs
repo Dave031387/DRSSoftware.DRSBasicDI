@@ -14,11 +14,11 @@ internal sealed class Scope : ContainerBase, IScope
     /// <summary>
     /// Create a new instance of the <see cref="Scope" /> class.
     /// </summary>
-    /// <param name="key">
+    /// <param name="containerKey">
     /// A <see langword="string"/> used to identify the specific <see cref="ServiceLocator"/>
     /// instance to use in resolving dependencies.
     /// </param>
-    internal Scope(string key) : this(ServiceLocator.GetInstance(key))
+    internal Scope(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
     {
     }
 

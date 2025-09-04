@@ -71,10 +71,16 @@ internal sealed class Container : ContainerBase, IContainer
     /// The container instance associated with the specified key.
     /// </returns>
     /// <exception cref="DependencyInjectionException">
-    /// Thrown if no container has been built for the specified key.
+    /// Thrown if no container has been built for the specified <paramref name="containerKey" /> or
+    /// if the key is <see langword="null" />.
     /// </exception>
     public static IContainer GetInstance(string containerKey = EmptyKey)
     {
+        if (containerKey is null)
+        {
+            throw new DependencyInjectionException(MsgNullContainerKey);
+        }
+
         if (_containers.TryGetValue(containerKey, out IContainer? value))
         {
             return value;
@@ -99,7 +105,7 @@ internal sealed class Container : ContainerBase, IContainer
     /// registered, an exception is thrown to prevent duplicate registrations.
     /// </remarks>
     /// <param name="containerKey">
-    /// The unique key used to identify the container. Must not be null or empty.
+    /// The unique key used to identify the container. Must not be null.
     /// </param>
     /// <exception cref="DependencyInjectionException">
     /// Thrown if a container is already registered with the specified key.

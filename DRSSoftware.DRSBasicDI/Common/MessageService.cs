@@ -23,11 +23,11 @@ internal static class MessageService
     internal const string MsgErrorDuringConstruction = "An exception was thrown while trying to construct an instance of {0} for {1}.";
     internal const string MsgGenericDependencyTypeIsOpen = "Generic {0} must be fully constructed.";
     internal const string MsgIncompatibleResolvingType = "The {0} is not assignable to {1}.";
-    internal const string MsgInvalidContainerKey = "The container key must not be null or empty.";
     internal const string MsgInvalidDependencyType = "The {0} must be a class type or interface type.";
     internal const string MsgInvalidResolvingType = "The {0} for {1} must be a class type.";
     internal const string MsgLifetimeAlreadySpecified = "Invalid attempt to assign lifetime more than once to {0}.";
     internal const string MsgNoSuitableConstructors = "No suitable constructor could be found for {0}.";
+    internal const string MsgNullContainerKey = "The container key must not be null.";
     internal const string MsgNullDependencyObject = "Unexpected null dependency object returned for {0}.";
     internal const string MsgNullDependencyType = "Invalid attempt to assign a null value to the dependency type.";
     internal const string MsgNullInstanceCreated = "A null instance was created by the service locator for {0}";

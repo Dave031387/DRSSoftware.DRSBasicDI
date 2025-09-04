@@ -22,11 +22,11 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// <summary>
     /// Create an instance of the <see cref="ResolvingObjectsService" /> class.
     /// </summary>
-    /// <param name="key">
+    /// <param name="containerKey">
     /// A <see langword="string"/> used to identify the specific <see cref="ServiceLocator"/>
     /// instance to use in resolving dependencies.
     /// </param>
-    internal ResolvingObjectsService(string key) : this(ServiceLocator.GetInstance(key))
+    internal ResolvingObjectsService(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
     {
     }
 
