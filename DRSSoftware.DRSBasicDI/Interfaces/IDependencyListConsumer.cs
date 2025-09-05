@@ -16,7 +16,7 @@ internal interface IDependencyListConsumer
     /// </param>
     /// <returns>
     /// The <see cref="IDependency" /> instance corresponding to the given
-    /// <paramref name="dependencyType" /> and <paramref name="key" /> value.
+    /// <paramref name="serviceKey" /> value.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
     IDependency Get(ServiceKey serviceKey);

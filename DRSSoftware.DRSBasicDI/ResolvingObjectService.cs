@@ -23,7 +23,7 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// Create an instance of the <see cref="ResolvingObjectsService" /> class.
     /// </summary>
     /// <param name="containerKey">
-    /// A <see langword="string"/> used to identify the specific <see cref="ServiceLocator"/>
+    /// A <see langword="string" /> used to identify the specific <see cref="ServiceLocator" />
     /// instance to use in resolving dependencies.
     /// </param>
     internal ResolvingObjectsService(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
@@ -52,7 +52,7 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// <summary>
     /// Add the given <paramref name="resolvingObject" /> to the list of resolving objects if no
     /// object currently exists for the given dependency type <typeparamref name="TDependency" />
-    /// having the specified <paramref name="key" />.
+    /// having the specified <paramref name="resolvingKey" />.
     /// </summary>
     /// <typeparam name="TDependency">
     /// The dependency type being resolved.
@@ -61,18 +61,18 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// The resolving object to be added for the given dependency type
     /// <typeparamref name="TDependency" />.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific <paramref name="resolvingObject" /> to be
     /// added.
     /// </param>
     /// <returns>
     /// The <paramref name="resolvingObject" /> or the object retrieved from the list of resolving
     /// objects if one already exists for the given dependency type
-    /// <typeparamref name="TDependency" /> and <paramref name="key" />.
+    /// <typeparamref name="TDependency" /> and <paramref name="resolvingKey" />.
     /// </returns>
-    public TDependency Add<TDependency>(TDependency resolvingObject, string key) where TDependency : class
+    public TDependency Add<TDependency>(TDependency resolvingObject, string resolvingKey) where TDependency : class
     {
-        ServiceKey serviceKey = new(typeof(TDependency), key);
+        ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
         IDependency dependency = DependencyList.Get(serviceKey);
         ServiceKey resolvingServiceKey = dependency.ResolvingServiceKey;
 

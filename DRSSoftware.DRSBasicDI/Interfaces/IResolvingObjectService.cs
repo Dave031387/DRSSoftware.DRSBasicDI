@@ -17,7 +17,7 @@ internal interface IResolvingObjectsService : IDisposable
     /// The resolving object to be added for the given dependency type
     /// <typeparamref name="TDependency" />.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be added.
     /// </param>
     /// <returns>
@@ -25,7 +25,7 @@ internal interface IResolvingObjectsService : IDisposable
     /// objects if one already exists for the given dependency type
     /// <typeparamref name="TDependency" />.
     /// </returns>
-    public TDependency Add<TDependency>(TDependency resolvingObject, string key) where TDependency : class;
+    public TDependency Add<TDependency>(TDependency resolvingObject, string resolvingKey) where TDependency : class;
 
     /// <summary>
     /// Check to see if the specified dependency type has been resolved and, if it has, return the

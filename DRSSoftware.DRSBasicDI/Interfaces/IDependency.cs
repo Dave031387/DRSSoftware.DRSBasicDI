@@ -24,20 +24,20 @@ internal interface IDependency : IEquatable<IDependency>
     }
 
     /// <summary>
-    /// Gets a unique resolving key value used for resolving dependencies having more than one
-    /// defined implementation.
+    /// Gets the <see cref="DependencyLifetime" /> enumeration value representing the dependency's
+    /// lifetime.
     /// </summary>
-    public string Key
+    public DependencyLifetime Lifetime
     {
         get;
         init;
     }
 
     /// <summary>
-    /// Gets the <see cref="DependencyLifetime" /> enumeration value representing the dependency's
-    /// lifetime.
+    /// Gets a unique resolving key value used for resolving dependencies having more than one
+    /// defined implementation.
     /// </summary>
-    public DependencyLifetime Lifetime
+    public string ResolvingKey
     {
         get;
         init;
@@ -67,9 +67,9 @@ internal interface IDependency : IEquatable<IDependency>
     /// The generated hash code for this <see cref="IDependency" /> object.
     /// </returns>
     /// <remarks>
-    /// The generated hash code is based on the <see cref="DependencyType" /> and <see cref="Key" />
-    /// properties since those two properties uniquely identify the <see cref="IDependency" />
-    /// object.
+    /// The generated hash code is based on the <see cref="DependencyType" /> and
+    /// <see cref="ResolvingKey" /> properties since those two properties uniquely identify the
+    /// <see cref="IDependency" /> object.
     /// </remarks>
     int GetHashCode();
 }

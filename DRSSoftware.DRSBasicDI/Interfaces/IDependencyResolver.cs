@@ -13,14 +13,14 @@ internal interface IDependencyResolver : IDisposable
     /// <typeparam name="TDependency">
     /// The dependency type that is to be resolved.
     /// </typeparam>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be retrieved.
     /// </param>
     /// <returns>
     /// An instance of the resolving class type cast as the dependency type.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    public TDependency Resolve<TDependency>(string key) where TDependency : class;
+    public TDependency Resolve<TDependency>(string resolvingKey) where TDependency : class;
 
     /// <summary>
     /// Retrieve the resolving object for the given dependency type
@@ -33,14 +33,14 @@ internal interface IDependencyResolver : IDisposable
     /// <param name="parameters">
     /// The list of constructor parameters used for constructing the resolving object.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be retrieved.
     /// </param>
     /// <returns>
     /// An instance of the resolving class type cast as the dependency type.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    public TDependency Resolve<TDependency>(object[] parameters, string key) where TDependency : class;
+    public TDependency Resolve<TDependency>(object[] parameters, string resolvingKey) where TDependency : class;
 
     /// <summary>
     /// Set the scoped <see cref="IResolvingObjectsService" /> to the specified

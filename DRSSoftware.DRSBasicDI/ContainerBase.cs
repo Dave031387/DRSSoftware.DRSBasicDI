@@ -25,27 +25,27 @@ internal abstract class ContainerBase : IContainerBase
 
     /// <summary>
     /// Gets an instance of the resolving type that is mapped to the given dependency type
-    /// <typeparamref name="TDependency" /> and resolving <paramref name="key" />. Constructor
+    /// <typeparamref name="TDependency" /> and <paramref name="resolvingKey" />. Constructor
     /// dependencies will be resolved automatically.
     /// </summary>
     /// <typeparam name="TDependency">
     /// The dependency type that is to be retrieved.
     /// </typeparam>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be retrieved.
     /// </param>
     /// <returns>
     /// The resolving object for the given dependency type <typeparamref name="TDependency" /> and
-    /// resolving <paramref name="key" />, or <see langword="null" /> if the resolving object can't
+    /// <paramref name="resolvingKey" />, or <see langword="null" /> if the resolving object can't
     /// be determined.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    public TDependency Resolve<TDependency>(string key = EmptyKey) where TDependency : class
-        => DependencyResolver.Resolve<TDependency>(key);
+    public TDependency Resolve<TDependency>(string resolvingKey = EmptyKey) where TDependency : class
+        => DependencyResolver.Resolve<TDependency>(resolvingKey);
 
     /// <summary>
     /// Gets an instance of the resolving type that is mapped to the given dependency type
-    /// <typeparamref name="TDependency" /> and resolving <paramref name="key" />. The instance will
+    /// <typeparamref name="TDependency" /> and <paramref name="resolvingKey" />. The instance will
     /// be created using the specified constructor <paramref name="parameters" />.
     /// </summary>
     /// <typeparam name="TDependency">
@@ -54,15 +54,15 @@ internal abstract class ContainerBase : IContainerBase
     /// <param name="parameters">
     /// An array containing all the parameters required by the constructor of the resolving type.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be retrieved.
     /// </param>
     /// <returns>
     /// The resolving object for the given dependency type <typeparamref name="TDependency" /> and
-    /// resolving <paramref name="key" />, or <see langword="null" /> if the resolving object can't
+    /// <paramref name="resolvingKey" />, or <see langword="null" /> if the resolving object can't
     /// be determined.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    public TDependency Resolve<TDependency>(object[] parameters, string key = EmptyKey) where TDependency : class
-        => DependencyResolver.Resolve<TDependency>(parameters, key);
+    public TDependency Resolve<TDependency>(object[] parameters, string resolvingKey = EmptyKey) where TDependency : class
+        => DependencyResolver.Resolve<TDependency>(parameters, resolvingKey);
 }

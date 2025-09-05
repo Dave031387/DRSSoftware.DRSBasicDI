@@ -22,12 +22,12 @@ internal interface IObjectConstructor
     /// <param name="parameterValues">
     /// The constructor parameter values to be used for constructing the resolving type.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be constructed.
     /// </param>
     /// <returns>
     /// The resolving object cast to the dependency type <typeparamref name="TDependency" />.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    public TDependency Construct<TDependency>(ConstructorInfo constructorInfo, object[] parameterValues, string key) where TDependency : class;
+    public TDependency Construct<TDependency>(ConstructorInfo constructorInfo, object[] parameterValues, string resolvingKey) where TDependency : class;
 }

@@ -97,7 +97,7 @@ internal sealed class ServiceLocator : IServiceLocator
     /// The interface type for which we want to retrieve the corresponding implementation class
     /// object.
     /// </typeparam>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific implementation class object to be retrieved.
     /// </param>
     /// <returns>
@@ -105,15 +105,15 @@ internal sealed class ServiceLocator : IServiceLocator
     /// <typeparamref name="T" />.
     /// </returns>
     /// <exception cref="ServiceLocatorException" />
-    public T Get<T>(string key = EmptyKey) where T : class
+    public T Get<T>(string resolvingKey = EmptyKey) where T : class
     {
-        if (_services.TryGetValue(new(typeof(T), key), out Dependency? service))
+        if (_services.TryGetValue(new(typeof(T), resolvingKey), out Dependency? service))
         {
             if (service is not null)
             {
                 try
                 {
-                    ConstructorInfo? constructorInfo = GetConstructorInfo<T>(service, key);
+                    ConstructorInfo? constructorInfo = GetConstructorInfo<T>(service, resolvingKey);
 
                     ServiceKey serviceKey = service.ResolvingServiceKey;
 
@@ -122,17 +122,17 @@ internal sealed class ServiceLocator : IServiceLocator
                         return GetSingleton<T>(serviceKey, constructorInfo);
                     }
 
-                    return CreateInstance<T>(constructorInfo, key);
+                    return CreateInstance<T>(constructorInfo, resolvingKey);
                 }
                 catch (Exception ex)
                 {
-                    string msg1 = FormatMessage<T>(MsgUnableToConstructService, key);
+                    string msg1 = FormatMessage<T>(MsgUnableToConstructService, resolvingKey);
                     throw new ServiceLocatorException(msg1, ex);
                 }
             }
         }
 
-        string msg2 = FormatMessage<T>(MsgServiceNotRegistered, key);
+        string msg2 = FormatMessage<T>(MsgServiceNotRegistered, resolvingKey);
         throw new ServiceLocatorException(msg2);
     }
 
@@ -177,7 +177,7 @@ internal sealed class ServiceLocator : IServiceLocator
     /// <param name="service">
     /// The dependency containing the type information to resolve the constructor.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// A key used to identify the specific service or context for the resolution.
     /// </param>
     /// <returns>
@@ -187,7 +187,7 @@ internal sealed class ServiceLocator : IServiceLocator
     /// Thrown if a matching constructor cannot be found for the specified type
     /// <typeparamref name="T" />.
     /// </exception>
-    private static ConstructorInfo GetConstructorInfo<T>(Dependency service, string key) where T : class
+    private static ConstructorInfo GetConstructorInfo<T>(Dependency service, string resolvingKey) where T : class
     {
         ConstructorInfo? constructorInfo = service.ResolvingType.GetConstructor(ConstructorBindingFlags,
                                                                                 null,
@@ -196,7 +196,7 @@ internal sealed class ServiceLocator : IServiceLocator
 
         if (constructorInfo is null)
         {
-            string msg = FormatMessage<T>(MsgUnableToObtainConstructor, key);
+            string msg = FormatMessage<T>(MsgUnableToObtainConstructor, resolvingKey);
             throw new ServiceLocatorException(msg);
         }
 
@@ -212,7 +212,7 @@ internal sealed class ServiceLocator : IServiceLocator
     /// <param name="constructorInfo">
     /// The <see cref="ConstructorInfo" /> used to invoke the constructor for creating the instance.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// A string key associated with the instance creation, used for error reporting.
     /// </param>
     /// <returns>
@@ -222,11 +222,11 @@ internal sealed class ServiceLocator : IServiceLocator
     /// Thrown if the constructor invocation does not produce an instance of type
     /// <typeparamref name="T" />.
     /// </exception>
-    private T CreateInstance<T>(ConstructorInfo constructorInfo, string key) where T : class
+    private T CreateInstance<T>(ConstructorInfo constructorInfo, string resolvingKey) where T : class
     {
         if (constructorInfo.Invoke([ContainerKey]) is not T instance)
         {
-            string msg = FormatMessage<T>(MsgNullInstanceCreated, key);
+            string msg = FormatMessage<T>(MsgNullInstanceCreated, resolvingKey);
             throw new ServiceLocatorException(msg);
         }
 
@@ -263,7 +263,7 @@ internal sealed class ServiceLocator : IServiceLocator
             {
                 if (!_singletonInstances.ContainsKey(serviceKey))
                 {
-                    T instance = CreateInstance<T>(constructorInfo, serviceKey.Key);
+                    T instance = CreateInstance<T>(constructorInfo, serviceKey.ResolvingKey);
                     _singletonInstances[serviceKey] = instance;
                 }
             }
@@ -284,15 +284,15 @@ internal sealed class ServiceLocator : IServiceLocator
     /// <param name="lifetime">
     /// The lifetime of the dependency being registered.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific implementation class object to be retrieved.
     /// </param>
     /// <exception cref="ServiceLocatorException" />
-    private void Register<TInterface, TImplementation>(DependencyLifetime lifetime, string key = EmptyKey)
+    private void Register<TInterface, TImplementation>(DependencyLifetime lifetime, string resolvingKey = EmptyKey)
         where TInterface : class
         where TImplementation : TInterface
     {
-        Dependency dependency = new(typeof(TInterface), typeof(TImplementation), lifetime, key);
+        Dependency dependency = new(typeof(TInterface), typeof(TImplementation), lifetime, resolvingKey);
         ServiceKey serviceKey = dependency.DependencyServiceKey;
 
         if (!_services.ContainsKey(serviceKey))
@@ -307,7 +307,7 @@ internal sealed class ServiceLocator : IServiceLocator
             }
         }
 
-        string msg = FormatMessage(MsgDuplicateService, typeof(TInterface), key, typeof(TImplementation));
+        string msg = FormatMessage(MsgDuplicateService, typeof(TInterface), resolvingKey, typeof(TImplementation));
         throw new ServiceLocatorException(msg);
     }
 }

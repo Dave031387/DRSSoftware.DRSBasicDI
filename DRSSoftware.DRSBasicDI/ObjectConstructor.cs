@@ -30,14 +30,14 @@ internal sealed class ObjectConstructor : IObjectConstructor
     /// <param name="parameterValues">
     /// The constructor parameter values to be used for constructing the resolving type.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be constructed.
     /// </param>
     /// <returns>
     /// The resolving object cast to the dependency type <typeparamref name="TDependency" />.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    public TDependency Construct<TDependency>(ConstructorInfo constructorInfo, object[] parameterValues, string key) where TDependency : class
+    public TDependency Construct<TDependency>(ConstructorInfo constructorInfo, object[] parameterValues, string resolvingKey) where TDependency : class
     {
         TDependency resolvingObject;
 
@@ -45,7 +45,7 @@ internal sealed class ObjectConstructor : IObjectConstructor
         {
             if (constructorInfo.Invoke(parameterValues) is not TDependency resolvingInstance)
             {
-                string msg = FormatMessage<TDependency>(MsgResolvingObjectNotCreated, key, constructorInfo.DeclaringType);
+                string msg = FormatMessage<TDependency>(MsgResolvingObjectNotCreated, resolvingKey, constructorInfo.DeclaringType);
                 throw new DependencyInjectionException(msg);
             }
 
@@ -53,7 +53,7 @@ internal sealed class ObjectConstructor : IObjectConstructor
         }
         catch (Exception ex)
         {
-            string msg = FormatMessage<TDependency>(MsgErrorDuringConstruction, key, constructorInfo.DeclaringType);
+            string msg = FormatMessage<TDependency>(MsgErrorDuringConstruction, resolvingKey, constructorInfo.DeclaringType);
             throw new DependencyInjectionException(msg, ex);
         }
 

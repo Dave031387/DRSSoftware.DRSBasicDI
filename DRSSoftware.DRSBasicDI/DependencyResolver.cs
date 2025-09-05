@@ -37,7 +37,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// Create a new instance of the <see cref="DependencyResolver" /> class.
     /// </summary>
     /// <param name="containerKey">
-    /// A <see langword="string"/> used to identify the specific <see cref="ServiceLocator"/>
+    /// A <see langword="string" /> used to identify the specific <see cref="ServiceLocator" />
     /// instance to use in resolving dependencies.
     /// </param>
     internal DependencyResolver(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
@@ -125,7 +125,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <typeparam name="TDependency">
     /// The dependency type that is to be resolved.
     /// </typeparam>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be retrieved.
     /// </param>
     /// <returns>
@@ -136,16 +136,16 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// resolved.
     /// </remarks>
     /// <exception cref="DependencyInjectionException" />
-    public TDependency Resolve<TDependency>(string key) where TDependency : class
+    public TDependency Resolve<TDependency>(string resolvingKey) where TDependency : class
     {
-        if (TryGetResolvedDependency(out TDependency? resolvedDependency, key))
+        if (TryGetResolvedDependency(out TDependency? resolvedDependency, resolvingKey))
         {
             // The only way we will get to this point is if the resolvedDependency value is not
             // null.
             return resolvedDependency!;
         }
 
-        return ConstructResolvingInstance<TDependency>(key);
+        return ConstructResolvingInstance<TDependency>(resolvingKey);
     }
 
     /// <summary>
@@ -159,25 +159,25 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <param name="parameters">
     /// The list of constructor parameters used for constructing the resolving object.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be retrieved.
     /// </param>
     /// <returns>
     /// An instance of the resolving class type cast as the dependency type.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    public TDependency Resolve<TDependency>(object[] parameters, string key) where TDependency : class
+    public TDependency Resolve<TDependency>(object[] parameters, string resolvingKey) where TDependency : class
     {
         ArgumentNullException.ThrowIfNull(parameters, nameof(parameters));
 
-        if (TryGetResolvedDependency(out TDependency? resolvedDependency, key))
+        if (TryGetResolvedDependency(out TDependency? resolvedDependency, resolvingKey))
         {
             // The only way we will get to this point is if the resolvedDependency value is not
             // null.
             return resolvedDependency!;
         }
 
-        return ConstructResolvingInstance<TDependency>(parameters, key);
+        return ConstructResolvingInstance<TDependency>(parameters, resolvingKey);
     }
 
     /// <summary>
@@ -217,7 +217,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <typeparam name="TDependency">
     /// The dependency type whose resolving object is being constructed.
     /// </typeparam>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be constructed.
     /// </param>
     /// <returns>
@@ -225,12 +225,12 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <typeparamref name="TDependency" />.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    private TDependency ConstructResolvingInstance<TDependency>(string key) where TDependency : class
+    private TDependency ConstructResolvingInstance<TDependency>(string resolvingKey) where TDependency : class
     {
-        ConstructorInfo constructorInfo = GetDIConstructorInfo<TDependency>(key);
+        ConstructorInfo constructorInfo = GetDIConstructorInfo<TDependency>(resolvingKey);
         object[] resolvedParameters = ResolveNestedDependencies(constructorInfo);
-        TDependency resolvingObject = ObjectConstructor.Construct<TDependency>(constructorInfo, resolvedParameters, key);
-        return SaveResolvedDependency(resolvingObject, key);
+        TDependency resolvingObject = ObjectConstructor.Construct<TDependency>(constructorInfo, resolvedParameters, resolvingKey);
+        return SaveResolvedDependency(resolvingObject, resolvingKey);
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <param name="parameters">
     /// The list of constructor parameters to be used in constructing the resolving object.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be constructed.
     /// </param>
     /// <returns>
@@ -252,11 +252,11 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <typeparamref name="TDependency" />.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
-    private TDependency ConstructResolvingInstance<TDependency>(object[] parameters, string key) where TDependency : class
+    private TDependency ConstructResolvingInstance<TDependency>(object[] parameters, string resolvingKey) where TDependency : class
     {
-        ConstructorInfo constructorInfo = GetDIConstructorInfo<TDependency>(key, parameters.Length);
-        TDependency resolvingObject = ObjectConstructor.Construct<TDependency>(constructorInfo, parameters, key);
-        return SaveResolvedDependency(resolvingObject, key);
+        ConstructorInfo constructorInfo = GetDIConstructorInfo<TDependency>(resolvingKey, parameters.Length);
+        TDependency resolvingObject = ObjectConstructor.Construct<TDependency>(constructorInfo, parameters, resolvingKey);
+        return SaveResolvedDependency(resolvingObject, resolvingKey);
     }
 
     /// <summary>
@@ -272,7 +272,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <typeparam name="TDependency">
     /// The type of the dependency to resolve. Must be a class.
     /// </typeparam>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// The key used to identify the dependency in the dependency list.
     /// </param>
     /// <param name="parameterCount">
@@ -283,9 +283,9 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// A <see cref="ConstructorInfo" /> object representing the resolved constructor for the
     /// specified dependency type.
     /// </returns>
-    private ConstructorInfo GetDIConstructorInfo<TDependency>(string key, int parameterCount = 0) where TDependency : class
+    private ConstructorInfo GetDIConstructorInfo<TDependency>(string resolvingKey, int parameterCount = 0) where TDependency : class
     {
-        ServiceKey serviceKey = new(typeof(TDependency), key);
+        ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
         IDependency dependency = DependencyList.Get(serviceKey);
         Type resolvingType = dependency.ResolvingType;
 
@@ -318,7 +318,7 @@ internal sealed class DependencyResolver : IDependencyResolver
         foreach (ParameterInfo parameter in parameters)
         {
             ResolvingKeyAttribute? attribute = parameter.GetCustomAttribute<ResolvingKeyAttribute>();
-            string resolvingKey = attribute?.Key ?? EmptyKey;
+            string resolvingKey = attribute?.Value ?? EmptyKey;
             Type parameterType = parameter.ParameterType;
             MethodInfo resolveMethodInfo;
 
@@ -370,7 +370,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// An instance of the resolving type that was mapped to the dependency type
     /// <typeparamref name="TDependency" />.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be saved.
     /// </param>
     /// <returns>
@@ -381,18 +381,18 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// Only scoped and singleton dependencies are saved. Transient dependencies by definition are
     /// created new every time they're requested.
     /// </remarks>
-    private TDependency SaveResolvedDependency<TDependency>(TDependency resolvedDependency, string key) where TDependency : class
+    private TDependency SaveResolvedDependency<TDependency>(TDependency resolvedDependency, string resolvingKey) where TDependency : class
     {
-        ServiceKey serviceKey = new(typeof(TDependency), key);
+        ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
         IDependency dependency = DependencyList.Get(serviceKey);
 
         if (dependency.Lifetime is DependencyLifetime.Scoped && ScopedService is not null)
         {
-            return ScopedService.Add(resolvedDependency, key);
+            return ScopedService.Add(resolvedDependency, resolvingKey);
         }
         else if (dependency.Lifetime is DependencyLifetime.Scoped or DependencyLifetime.Singleton)
         {
-            return NonScopedService.Add(resolvedDependency, key);
+            return NonScopedService.Add(resolvedDependency, resolvingKey);
         }
 
         return resolvedDependency;
@@ -410,16 +410,16 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <typeparamref name="TDependency" /> if one was previously saved. Otherwise,
     /// <see langword="null" />.
     /// </param>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific resolving object to be retrieved.
     /// </param>
     /// <returns>
     /// <see langword="true" /> if a valid resolving object is successfully retrieved. Otherwise,
     /// <see langword="false" />.
     /// </returns>
-    private bool TryGetResolvedDependency<TDependency>(out TDependency? resolvedDependency, string key) where TDependency : class
+    private bool TryGetResolvedDependency<TDependency>(out TDependency? resolvedDependency, string resolvingKey) where TDependency : class
     {
-        ServiceKey serviceKey = new(typeof(TDependency), key);
+        ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
         IDependency dependency = DependencyList.Get(serviceKey);
 
         if (ScopedService is not null && dependency.Lifetime is DependencyLifetime.Scoped)

@@ -16,24 +16,24 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 /// <param name="ResolvingType">
 /// Gets the resolving type that is mapped to the <see cref="DependencyType" /> property.
 /// </param>
-/// <param name="Key">
+/// <param name="ResolvingKey">
 /// Gets a unique resolving key value used for resolving dependencies having more than one defined
 /// implementation.
 /// </param>
 internal record Dependency(Type DependencyType,
-                                  Type ResolvingType,
-                                  DependencyLifetime Lifetime,
-                                  string Key) : IDependency
+                                    Type ResolvingType,
+                                    DependencyLifetime Lifetime,
+                                    string ResolvingKey) : IDependency
 {
     /// <summary>
     /// Gets the dependency <see cref="ServiceKey" /> for this <see cref="Dependency" /> object.
     /// </summary>
-    public ServiceKey DependencyServiceKey => new(DependencyType, Key);
+    public ServiceKey DependencyServiceKey => new(DependencyType, ResolvingKey);
 
     /// <summary>
     /// Gets the resolving <see cref="ServiceKey" /> for this <see cref="Dependency" /> object.
     /// </summary>
-    public ServiceKey ResolvingServiceKey => new(ResolvingType, Key);
+    public ServiceKey ResolvingServiceKey => new(ResolvingType, ResolvingKey);
 
     /// <summary>
     /// Indicates whether the current <see cref="Dependency" /> object is equal to the specified
@@ -51,7 +51,7 @@ internal record Dependency(Type DependencyType,
                                                       && other.DependencyType == DependencyType
                                                       && other.ResolvingType == ResolvingType
                                                       && other.Lifetime == Lifetime
-                                                      && other.Key == Key;
+                                                      && other.ResolvingKey == ResolvingKey;
 
     /// <summary>
     /// Generate a hash code for this <see cref="Dependency" /> object.
@@ -60,9 +60,9 @@ internal record Dependency(Type DependencyType,
     /// The generated hash code for this <see cref="Dependency" /> object.
     /// </returns>
     /// <remarks>
-    /// The generated hash code is based on the <see cref="DependencyType" /> and <see cref="Key" />
-    /// properties since those two properties uniquely identify the <see cref="Dependency" />
-    /// object.
+    /// The generated hash code is based on the <see cref="DependencyType" /> and
+    /// <see cref="ResolvingKey" /> properties since those two properties uniquely identify the
+    /// <see cref="Dependency" /> object.
     /// </remarks>
-    public override int GetHashCode() => HashCode.Combine(DependencyType, Key);
+    public override int GetHashCode() => HashCode.Combine(DependencyType, ResolvingKey);
 }

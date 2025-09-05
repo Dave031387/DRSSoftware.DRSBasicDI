@@ -61,7 +61,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
             }
         }
 
-        string msg = FormatMessage(MsgDuplicateDependency, dependency.DependencyType, dependency.Key);
+        string msg = FormatMessage(MsgDuplicateDependency, dependency.DependencyType, dependency.ResolvingKey);
         throw new ContainerBuildException(msg);
     }
 
@@ -75,7 +75,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     /// </param>
     /// <returns>
     /// The <see cref="IDependency" /> instance corresponding to the given
-    /// <paramref name="dependencyType" /> and <paramref name="key" /> value.
+    /// <paramref name="serviceKey" /> value.
     /// </returns>
     /// <exception cref="DependencyInjectionException" />
     public IDependency Get(ServiceKey serviceKey)
@@ -86,7 +86,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
             {
                 if (dependency is null)
                 {
-                    string msg = FormatMessage(MsgNullDependencyObject, serviceKey.Type, serviceKey.Key);
+                    string msg = FormatMessage(MsgNullDependencyObject, serviceKey.Type, serviceKey.ResolvingKey);
                     throw new DependencyInjectionException(msg);
                 }
 
@@ -94,7 +94,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
             }
             else
             {
-                string msg = FormatMessage(MsgDependencyMappingNotFound, serviceKey.Type, serviceKey.Key);
+                string msg = FormatMessage(MsgDependencyMappingNotFound, serviceKey.Type, serviceKey.ResolvingKey);
                 throw new DependencyInjectionException(msg);
             }
         }

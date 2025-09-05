@@ -10,19 +10,19 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 /// Either a dependency type (for retrieving <see cref="IDependency" /> objects) or a resolving type
 /// (for retrieving singleton or scoped instances).
 /// </param>
-/// <param name="key">
+/// <param name="resolvingKey">
 /// An optional key used to identify the specific object to be retrieved, or an empty string if no
 /// key is needed.
 /// </param>
-internal sealed class ServiceKey(Type type, string key) : IEquatable<ServiceKey>
+internal sealed class ServiceKey(Type type, string resolvingKey) : IEquatable<ServiceKey>
 {
     /// <summary>
-    /// Get the key for the <see cref="ServiceKey" /> object.
+    /// Get the resolving key for the <see cref="ServiceKey" /> object.
     /// </summary>
-    internal string Key
+    internal string ResolvingKey
     {
         get;
-    } = key;
+    } = resolvingKey;
 
     /// <summary>
     /// Get the type for the <see cref="ServiceKey" /> object.
@@ -33,17 +33,17 @@ internal sealed class ServiceKey(Type type, string key) : IEquatable<ServiceKey>
     } = type;
 
     /// <summary>
-    /// Determine whether the given <paramref name="other" /> <see cref="ServiceKey" /> object is
+    /// Determine whether the given <paramref name="other" /><see cref="ServiceKey" /> object is
     /// equal to this object.
     /// </summary>
     /// <param name="other">
     /// The other <see cref="ServiceKey" /> object to be compared to this object.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> if the given <paramref name="other" /> <see cref="ServiceKey" />
+    /// <see langword="true" /> if the given <paramref name="other" /><see cref="ServiceKey" />
     /// object is equal to this object. Otherwise, returns <see langword="false" />.
     /// </returns>
-    public bool Equals(ServiceKey? other) => other is not null && other.Type == Type && other.Key == Key;
+    public bool Equals(ServiceKey? other) => other is not null && other.Type == Type && other.ResolvingKey == ResolvingKey;
 
     /// <summary>
     /// Determine whether the given <paramref name="obj" /> object is equal to this object.
@@ -63,5 +63,5 @@ internal sealed class ServiceKey(Type type, string key) : IEquatable<ServiceKey>
     /// <returns>
     /// The hash code for the <see cref="ServiceKey" /> object.
     /// </returns>
-    public override int GetHashCode() => HashCode.Combine(Type, Key);
+    public override int GetHashCode() => HashCode.Combine(Type, ResolvingKey);
 }

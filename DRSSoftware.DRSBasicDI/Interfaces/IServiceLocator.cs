@@ -14,7 +14,7 @@ internal interface IServiceLocator
     /// The interface type for which we want to retrieve the corresponding implementation class
     /// object.
     /// </typeparam>
-    /// <param name="key">
+    /// <param name="resolvingKey">
     /// An optional key used to identify the specific implementation class object to be retrieved.
     /// </param>
     /// <returns>
@@ -22,5 +22,5 @@ internal interface IServiceLocator
     /// <typeparamref name="T" />.
     /// </returns>
     /// <exception cref="ServiceLocatorException" />
-    public T Get<T>(string key = EmptyKey) where T : class;
+    public T Get<T>(string resolvingKey = EmptyKey) where T : class;
 }
