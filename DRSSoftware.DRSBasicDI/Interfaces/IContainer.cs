@@ -13,7 +13,7 @@ public interface IContainer : IContainerBase
     /// <summary>
     /// Gets a <see langword="string"/> value used to identify this specific <see cref="IContainer" /> instance.
     /// </summary>
-    string ContainerKey
+    public string ContainerKey
     {
         get;
     }

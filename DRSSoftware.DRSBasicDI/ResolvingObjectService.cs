@@ -72,22 +72,21 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// </returns>
     public TDependency Add<TDependency>(TDependency resolvingObject, string resolvingKey) where TDependency : class
     {
-        ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
-        IDependency dependency = DependencyList.Get(serviceKey);
-        ServiceKey resolvingServiceKey = dependency.ResolvingServiceKey;
+        IDependency dependency = DependencyList.Get<TDependency>(resolvingKey);
+        ServiceKey serviceKey = dependency.ResolvingServiceKey;
 
-        if (!_resolvingObjects.ContainsKey(resolvingServiceKey))
+        if (!_resolvingObjects.ContainsKey(serviceKey))
         {
             lock (_lock)
             {
-                if (!_resolvingObjects.ContainsKey(resolvingServiceKey))
+                if (!_resolvingObjects.ContainsKey(serviceKey))
                 {
-                    _resolvingObjects[resolvingServiceKey] = resolvingObject;
+                    _resolvingObjects[serviceKey] = resolvingObject;
                 }
             }
         }
 
-        return (TDependency)_resolvingObjects[resolvingServiceKey];
+        return (TDependency)_resolvingObjects[serviceKey];
     }
 
     /// <summary>

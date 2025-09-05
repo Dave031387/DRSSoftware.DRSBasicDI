@@ -9,7 +9,7 @@ internal interface IDependency : IEquatable<IDependency>
     /// <summary>
     /// Gets the dependency <see cref="ServiceKey" /> for this <see cref="IDependency" /> object.
     /// </summary>
-    ServiceKey DependencyServiceKey
+    public ServiceKey DependencyServiceKey
     {
         get;
     }
@@ -46,7 +46,7 @@ internal interface IDependency : IEquatable<IDependency>
     /// <summary>
     /// Gets the resolving <see cref="ServiceKey" /> for this <see cref="IDependency" /> object.
     /// </summary>
-    ServiceKey ResolvingServiceKey
+    public ServiceKey ResolvingServiceKey
     {
         get;
     }
@@ -71,5 +71,5 @@ internal interface IDependency : IEquatable<IDependency>
     /// <see cref="ResolvingKey" /> properties since those two properties uniquely identify the
     /// <see cref="IDependency" /> object.
     /// </remarks>
-    int GetHashCode();
+    public int GetHashCode();
 }

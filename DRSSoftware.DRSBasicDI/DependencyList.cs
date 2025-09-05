@@ -67,19 +67,22 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
 
     /// <summary>
     /// Get the <see cref="IDependency" /> object associated with the given
-    /// <paramref name="serviceKey" />.
+    /// <typeparamref name="TDependency" /> type and <paramref name="resolvingKey" />.
     /// </summary>
-    /// <param name="serviceKey">
-    /// The dependency <see cref="ServiceKey" /> used to retrieve the desired
-    /// <see cref="IDependency" /> object.
+    /// <typeparam name="TDependency">
+    /// The type of dependency to be retrieved.
+    /// </typeparam>
+    /// <param name="resolvingKey">
+    /// An optional key that uniquely identifies the dependency to be retrieved.
     /// </param>
     /// <returns>
-    /// The <see cref="IDependency" /> instance corresponding to the given
-    /// <paramref name="serviceKey" /> value.
+    /// The <see cref="IDependency" /> object corresponding to the specified
+    /// <typeparamref name="TDependency" /> type and <paramref name="resolvingKey" />.
     /// </returns>
-    /// <exception cref="DependencyInjectionException" />
-    public IDependency Get(ServiceKey serviceKey)
+    public IDependency Get<TDependency>(string resolvingKey) where TDependency : class
     {
+        ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
+
         lock (_lock)
         {
             if (_dependencies.TryGetValue(serviceKey, out IDependency? dependency))

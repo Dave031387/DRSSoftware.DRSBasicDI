@@ -285,8 +285,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// </returns>
     private ConstructorInfo GetDIConstructorInfo<TDependency>(string resolvingKey, int parameterCount = 0) where TDependency : class
     {
-        ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
-        IDependency dependency = DependencyList.Get(serviceKey);
+        IDependency dependency = DependencyList.Get<TDependency>(resolvingKey);
         Type resolvingType = dependency.ResolvingType;
 
         return parameterCount == 0
@@ -383,8 +382,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// </remarks>
     private TDependency SaveResolvedDependency<TDependency>(TDependency resolvedDependency, string resolvingKey) where TDependency : class
     {
-        ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
-        IDependency dependency = DependencyList.Get(serviceKey);
+        IDependency dependency = DependencyList.Get<TDependency>(resolvingKey);
 
         if (dependency.Lifetime is DependencyLifetime.Scoped && ScopedService is not null)
         {
@@ -419,8 +417,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// </returns>
     private bool TryGetResolvedDependency<TDependency>(out TDependency? resolvedDependency, string resolvingKey) where TDependency : class
     {
-        ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
-        IDependency dependency = DependencyList.Get(serviceKey);
+        IDependency dependency = DependencyList.Get<TDependency>(resolvingKey);
 
         if (ScopedService is not null && dependency.Lifetime is DependencyLifetime.Scoped)
         {
