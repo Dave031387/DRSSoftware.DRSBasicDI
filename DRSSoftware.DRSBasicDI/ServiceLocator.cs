@@ -62,8 +62,8 @@ internal sealed class ServiceLocator : IServiceLocator
     /// </summary>
     /// <remarks>
     /// This is a private constructor to prevent external instantiation of the
-    /// <see cref="ServiceLocator" /> class. The static <see cref="Instance" /> property must be
-    /// used to obtain an instance of the <see cref="ServiceLocator" /> class.
+    /// <see cref="ServiceLocator" /> class. The static <see cref="GetInstance(string)" /> method
+    /// must be used to obtain an instance of the <see cref="ServiceLocator" /> class.
     /// </remarks>
     private ServiceLocator(string containerKey)
     {

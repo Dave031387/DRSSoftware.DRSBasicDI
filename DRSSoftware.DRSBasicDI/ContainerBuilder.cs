@@ -30,7 +30,7 @@ public sealed class ContainerBuilder : IContainerBuilder
     /// This field is used to track the number of test containers. It is intended for internal use
     /// only.
     /// </remarks>
-    private static int _testContainerCount = 0;
+    private static int _testContainerCount;
 
     /// <summary>
     /// A boolean flag that gets set to <see langword="true" /> once the <see cref="IContainer" />
@@ -47,8 +47,8 @@ public sealed class ContainerBuilder : IContainerBuilder
     /// </param>
     /// <remarks>
     /// This constructor is declared <see langword="private" />. Use the static
-    /// <see cref="Instance" /> property to create a new, empty <see cref="ContainerBuilder" />
-    /// object.
+    /// <see cref="GetInstance(string)" /> method to create a new, empty
+    /// <see cref="ContainerBuilder" /> object.
     /// </remarks>
     private ContainerBuilder(string containerKey)
         : this(DRSBasicDI.ServiceLocator.GetInstance(containerKey), containerKey)
@@ -573,10 +573,6 @@ public sealed class ContainerBuilder : IContainerBuilder
     /// </summary>
     /// <param name="serviceLocator">
     /// A service locator object that should provide mock instances of the requested dependencies.
-    /// </param>
-    /// <param name="containerKey">
-    /// An optional key used for identifying the specific instance of the
-    /// <see cref="ContainerBuilder" /> class.
     /// </param>
     /// <remarks>
     /// Please note that this method doesn't return a singleton instance. Each call to this method

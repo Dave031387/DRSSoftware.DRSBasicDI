@@ -305,8 +305,8 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <paramref name="constructorInfo" />.
     /// </returns>
     /// <remarks>
-    /// This method makes recursive calls to <see cref="Resolve{T}" /> until all nested dependencies
-    /// have been resolved.
+    /// This method makes recursive calls to <see cref="Resolve{TDependency}(string)" /> until all
+    /// nested dependencies have been resolved.
     /// </remarks>
     /// <exception cref="DependencyInjectionException" />
     private object[] ResolveNestedDependencies(ConstructorInfo constructorInfo)

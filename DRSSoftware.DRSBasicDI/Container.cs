@@ -21,6 +21,10 @@ internal sealed class Container : ContainerBase, IContainer
     /// <summary>
     /// Create a new instance of the <see cref="Container" /> class.
     /// </summary>
+    /// <param name="containerKey">
+    /// A unique <see langword="string" /> value used to identify and retrieve a specific instance
+    /// of the <see cref="Container" /> object.
+    /// </param>
     internal Container(string containerKey) : this(DRSBasicDI.ServiceLocator.GetInstance(containerKey), containerKey)
     {
     }
@@ -30,6 +34,10 @@ internal sealed class Container : ContainerBase, IContainer
     /// </summary>
     /// <param name="serviceLocator">
     /// A service locator object that should provide mock instances of the requested dependencies.
+    /// </param>
+    /// <param name="containerKey">
+    /// A unique <see langword="string" /> value used to identify and retrieve a specific instance
+    /// of the <see cref="Container" /> object.
     /// </param>
     internal Container(IServiceLocator serviceLocator, string containerKey)
     {

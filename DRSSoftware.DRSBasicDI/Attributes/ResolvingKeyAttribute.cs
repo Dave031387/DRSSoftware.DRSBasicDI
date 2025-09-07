@@ -3,11 +3,11 @@
 /// <summary>
 /// Attribute used to specify the key to use when resolving a dependency.
 /// </summary>
-/// <param name="resolvingKey">
+/// <param name="value">
 /// A <see langword="string" /> value that is used as the resolving key."
 /// </param>
 [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.GenericParameter)]
-public sealed class ResolvingKeyAttribute(string resolvingKey) : Attribute
+public sealed class ResolvingKeyAttribute(string value) : Attribute
 {
     /// <summary>
     /// Get the resolving key value.
@@ -15,5 +15,5 @@ public sealed class ResolvingKeyAttribute(string resolvingKey) : Attribute
     public string Value
     {
         get;
-    } = resolvingKey ?? EmptyKey;
+    } = value ?? EmptyKey;
 }
