@@ -23,6 +23,38 @@ public sealed class TypeExtensionsTests
     }
 
     [Fact]
+    public void GetDIConstructorInfoForValueTypeWithParameterCount_ShouldThrowException()
+    {
+        // Arrange
+        Type type = typeof(int);
+        string typeName = GetResolvingName(type);
+        int parameterCount = 1;
+        string expected = string.Format(CultureInfo.InvariantCulture, MsgNoSuitableConstructors, typeName);
+
+        // Act
+        void action() => type.GetDIConstructorInfo(parameterCount);
+
+        // Assert
+        AssertException<InvalidOperationException>(action, expected);
+    }
+
+    [Fact]
+    public void GetDIConstructorInfoForClassTypeWithInvalidParameterCount_ShouldThrowException()
+    {
+        // Arrange
+        Type type = typeof(ManyConstructors);
+        string typeName = GetResolvingName(type);
+        int parameterCount = 3;
+        string expected = string.Format(CultureInfo.InvariantCulture, MsgConstructorNotFound, typeName);
+
+        // Act
+        void action() => type.GetDIConstructorInfo(parameterCount);
+
+        // Assert
+        AssertException<InvalidOperationException>(action, expected);
+    }
+
+    [Fact]
     public void GetDIConstructorInfoWithAttribute_ShouldReturnConstructorInfoWithAttribute()
     {
         // Arrange
@@ -31,6 +63,23 @@ public sealed class TypeExtensionsTests
 
         // Act
         ConstructorInfo actual = type.GetDIConstructorInfo();
+
+        // Assert
+        actual
+            .Should()
+            .BeSameAs(expected);
+    }
+
+    [Fact]
+    public void GetDIConstructorInfoWithParameterCountAndAttribute_ShouldReturnConstructorInfoWithAttribute()
+    {
+        // Arrange
+        Type type = typeof(ManyConstructors);
+        int parameterCount = 2;
+        ConstructorInfo expected = type.GetConstructor(_bindingFlags, [typeof(string), typeof(string)])!;
+
+        // Act
+        ConstructorInfo actual = type.GetDIConstructorInfo(parameterCount);
 
         // Assert
         actual
@@ -52,6 +101,25 @@ public sealed class TypeExtensionsTests
         actual
             .Should()
             .BeSameAs(expected);
+    }
+
+    [Fact]
+    public void GetDIConstructorInfoWithParameterCountAndNoAttribute_ShouldReturnConstructorInfoWithCorrectParameterCount()
+    {
+        // Arrange
+        Type type = typeof(Class1);
+        int parameterCount = 1;
+        ConstructorInfo expected1 = type.GetConstructor(_bindingFlags, [typeof(int)])!;
+        ConstructorInfo expected2 = type.GetConstructor(_bindingFlags, [typeof(string)])!;
+        ConstructorInfo[] expected = [expected1, expected2];
+
+        // Act
+        ConstructorInfo actual = type.GetDIConstructorInfo(parameterCount);
+
+        // Assert
+        expected
+            .Should()
+            .Contain(actual);
     }
 
     [Theory]

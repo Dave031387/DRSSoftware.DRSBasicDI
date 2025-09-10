@@ -110,7 +110,8 @@ internal static class TypeExtensions
     /// Specifies the expected number of parameters to look for in the constructor.
     /// </param>
     /// <returns>
-    /// The <see cref="ConstructorInfo" /> object for the given class type.
+    /// The <see cref="ConstructorInfo" /> object having the specified number of parameters for the
+    /// given class type.
     /// </returns>
     /// <exception cref="InvalidOperationException" />
     internal static ConstructorInfo GetDIConstructorInfo(this Type type, int parameterCount)

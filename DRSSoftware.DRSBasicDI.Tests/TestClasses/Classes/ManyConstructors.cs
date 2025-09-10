@@ -10,6 +10,8 @@ public class ManyConstructors
 
     public ManyConstructors(int field1) => Field1 = field1;
 
+    public ManyConstructors(string field2) => Field2 = field2;
+
     public ManyConstructors(string field2, bool field3)
     {
         Field2 = field2;
