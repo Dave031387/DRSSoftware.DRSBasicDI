@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRSSoftware.DRSBasicDI", "DRSSoftware.DRSBasicDI\DRSSoftware.DRSBasicDI.csproj", "{1760B13B-C51E-4921-ABC7-8BC8215ACA83}"
 EndProject
@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DRSSoftware.DRSBasicDI.Tests", "DRSSoftware.DRSBasicDI.Tests\DRSSoftware.DRSBasicDI.Tests.csproj", "{9F1DCFB5-EAF4-4800-B710-7F1F85C279FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +24,10 @@ Global
 		{1760B13B-C51E-4921-ABC7-8BC8215ACA83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1760B13B-C51E-4921-ABC7-8BC8215ACA83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1760B13B-C51E-4921-ABC7-8BC8215ACA83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F1DCFB5-EAF4-4800-B710-7F1F85C279FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F1DCFB5-EAF4-4800-B710-7F1F85C279FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F1DCFB5-EAF4-4800-B710-7F1F85C279FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F1DCFB5-EAF4-4800-B710-7F1F85C279FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

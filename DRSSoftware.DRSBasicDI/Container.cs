@@ -6,6 +6,9 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 /// The <see cref="Container" /> class implements a basic dependency injection container for
 /// managing and resolving non-scoped dependencies.
 /// </summary>
+/// <remarks>
+/// This class is instantiated only by the <see cref="DRSBasicDI.ServiceLocator" /> class.
+/// </remarks>
 internal sealed class Container : ContainerBase, IContainer
 {
     /// <summary>

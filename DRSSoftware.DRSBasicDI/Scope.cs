@@ -4,10 +4,11 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 
 /// <summary>
 /// The <see cref="Scope" /> class implements a basic dependency injection container for managing
-/// and resolving scoped dependencies.
+/// and resolving scoped dependencies. Each <see cref="Scope" /> object manages scoped dependencies
+/// within a single dependency scope.
 /// </summary>
 /// <remarks>
-/// Each <see cref="Scope" /> object manages scoped dependencies within a single dependency scope.
+/// This class is instantiated only by the <see cref="ServiceLocator" /> class.
 /// </remarks>
 internal sealed class Scope : ContainerBase, IScope
 {
@@ -15,7 +16,7 @@ internal sealed class Scope : ContainerBase, IScope
     /// Create a new instance of the <see cref="Scope" /> class.
     /// </summary>
     /// <param name="containerKey">
-    /// A <see langword="string"/> used to identify the specific <see cref="ServiceLocator"/>
+    /// A <see langword="string" /> used to identify the specific <see cref="ServiceLocator" />
     /// instance to use in resolving dependencies.
     /// </param>
     internal Scope(string containerKey) : this(ServiceLocator.GetInstance(containerKey))

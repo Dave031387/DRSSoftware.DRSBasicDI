@@ -106,6 +106,8 @@ internal static class MessageService
                                          Type? resolvingType = null,
                                          bool forceDependencyName = false)
     {
+        CultureInfo cultureInfo = CultureInfo.InvariantCulture;
+
         if (forceDependencyName || dependencyType is not null)
         {
             string dependencyTypeName = GetDependencyName(dependencyType, resolvingKey);
@@ -113,21 +115,21 @@ internal static class MessageService
             if (resolvingType is not null)
             {
                 string resolvingTypeName = GetResolvingName(resolvingType);
-                return string.Format(CultureInfo.InvariantCulture, message, resolvingTypeName, dependencyTypeName);
+                return string.Format(cultureInfo, message, resolvingTypeName, dependencyTypeName);
             }
             else
             {
-                return string.Format(CultureInfo.InvariantCulture, message, dependencyTypeName);
+                return string.Format(cultureInfo, message, dependencyTypeName);
             }
         }
         else if (resolvingType is not null)
         {
             string resolvingTypeName = GetResolvingName(resolvingType);
-            return string.Format(CultureInfo.InvariantCulture, message, resolvingTypeName);
+            return string.Format(cultureInfo, message, resolvingTypeName);
         }
         else if (resolvingKey is not null)
         {
-            return string.Format(CultureInfo.InvariantCulture, message, resolvingKey);
+            return string.Format(cultureInfo, message, resolvingKey);
         }
         else
         {
@@ -179,7 +181,7 @@ internal static class MessageService
     /// <returns>
     /// The generated dependency name string.
     /// </returns>
-    private static string GetDependencyName(Type? dependencyType, string? resolvingKey)
+    internal static string GetDependencyName(Type? dependencyType, string? resolvingKey)
     {
         string dependencyTypeName = dependencyType is null ? NA : dependencyType.GetFriendlyName();
         return FormatDependencyName(dependencyTypeName, resolvingKey);
@@ -194,7 +196,7 @@ internal static class MessageService
     /// <returns>
     /// The generated resolving name string.
     /// </returns>
-    private static string GetResolvingName(Type resolvingType)
+    internal static string GetResolvingName(Type resolvingType)
     {
         string resolvingTypeName = resolvingType.GetFriendlyName();
         return FormatResolvingName(resolvingTypeName);

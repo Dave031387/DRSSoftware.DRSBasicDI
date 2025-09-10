@@ -1,4 +1,8 @@
-﻿namespace DRSSoftware.DRSBasicDI.Common;
+﻿using System.Runtime.CompilerServices;
+
+[assembly:InternalsVisibleTo("DRSSoftware.DRSBasicDI.Tests")]
+
+namespace DRSSoftware.DRSBasicDI.Common;
 
 /// <summary>
 /// The <see cref="Globals" /> class is a static class containing global constants.

@@ -1,5 +1,9 @@
 # DRSBasicDI Dependency Injection Container
 
+> [!IMPORTANT]
+> I have made a couple of changes to this class library. The README file hasn't been updated yet to reflect these changes. I'm currently working on
+> the unit tests. The README file will be updated once unit testing is completed.
+
 ## Background
 I started this project as a way to learn more about dependency injection and how to implement it in a .NET application. I wanted to create a simple
 and lightweight container that could be used in small to medium-sized projects without the overhead of larger frameworks. The goal was to provide a

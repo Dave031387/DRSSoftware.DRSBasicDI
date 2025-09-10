@@ -7,6 +7,9 @@ using System.Reflection;
 /// The <see cref="ObjectConstructor" /> class is used to construct resolving objects for a given
 /// dependency type.
 /// </summary>
+/// <remarks>
+/// This class is instantiated only by the <see cref="ServiceLocator" /> class.
+/// </remarks>
 internal sealed class ObjectConstructor : IObjectConstructor
 {
     /// <summary>

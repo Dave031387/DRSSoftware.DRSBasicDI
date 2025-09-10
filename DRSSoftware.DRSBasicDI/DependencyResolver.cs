@@ -9,6 +9,9 @@ using System.Reflection;
 /// The <see cref="DependencyResolver" /> class is responsible for creating an instance of the
 /// resolving object for a given dependency type.
 /// </summary>
+/// <remarks>
+/// This class is instantiated only by the <see cref="ServiceLocator" /> class.
+/// </remarks>
 internal sealed class DependencyResolver : IDependencyResolver
 {
     /// <summary>

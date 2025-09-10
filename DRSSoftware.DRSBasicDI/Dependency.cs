@@ -20,10 +20,10 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 /// Gets a unique resolving key value used for resolving dependencies having more than one defined
 /// implementation.
 /// </param>
-internal record Dependency(Type DependencyType,
-                                    Type ResolvingType,
-                                    DependencyLifetime Lifetime,
-                                    string ResolvingKey) : IDependency
+internal sealed record Dependency(Type DependencyType,
+                                  Type ResolvingType,
+                                  DependencyLifetime Lifetime,
+                                  string ResolvingKey) : IDependency
 {
     /// <summary>
     /// Gets the dependency <see cref="ServiceKey" /> for this <see cref="Dependency" /> object.
@@ -47,11 +47,11 @@ internal record Dependency(Type DependencyType,
     /// <see langword="true" /> if this <see cref="Dependency" /> object is equal to the
     /// <paramref name="other" /> object; otherwise, <see langword="false" />
     /// </returns>
-    public virtual bool Equals(IDependency? other) => other is not null
-                                                      && other.DependencyType == DependencyType
-                                                      && other.ResolvingType == ResolvingType
-                                                      && other.Lifetime == Lifetime
-                                                      && other.ResolvingKey == ResolvingKey;
+    public bool Equals(IDependency? other) => other is not null
+                                              && other.DependencyType == DependencyType
+                                              && other.ResolvingType == ResolvingType
+                                              && other.Lifetime == Lifetime
+                                              && other.ResolvingKey == ResolvingKey;
 
     /// <summary>
     /// Generate a hash code for this <see cref="Dependency" /> object.

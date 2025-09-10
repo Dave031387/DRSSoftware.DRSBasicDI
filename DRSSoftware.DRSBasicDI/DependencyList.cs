@@ -7,6 +7,9 @@ using IContainer = Interfaces.IContainer;
 /// The <see cref="DependencyList" /> class is used for storing and retrieving
 /// <see cref="IDependency" /> objects representing application dependencies.
 /// </summary>
+/// <remarks>
+/// This class is instantiated only by the <see cref="ServiceLocator" /> class.
+/// </remarks>
 internal sealed class DependencyList : IDependencyListBuilder, IDependencyListConsumer
 {
     /// <summary>
