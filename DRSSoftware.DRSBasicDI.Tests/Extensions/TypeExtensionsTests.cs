@@ -12,7 +12,7 @@ public sealed class TypeExtensionsTests
     {
         // Arrange
         Type type = typeof(int);
-        string typeName = GetResolvingName(type);
+        string typeName = "resolving type int";
         string expected = string.Format(CultureInfo.InvariantCulture, MsgNoSuitableConstructors, typeName);
 
         // Act
@@ -27,7 +27,7 @@ public sealed class TypeExtensionsTests
     {
         // Arrange
         Type type = typeof(int);
-        string typeName = GetResolvingName(type);
+        string typeName = "resolving type int";
         int parameterCount = 1;
         string expected = string.Format(CultureInfo.InvariantCulture, MsgNoSuitableConstructors, typeName);
 
@@ -43,7 +43,7 @@ public sealed class TypeExtensionsTests
     {
         // Arrange
         Type type = typeof(ManyConstructors);
-        string typeName = GetResolvingName(type);
+        string typeName = "resolving type ManyConstructors";
         int parameterCount = 3;
         string expected = string.Format(CultureInfo.InvariantCulture, MsgConstructorNotFound, typeName);
 

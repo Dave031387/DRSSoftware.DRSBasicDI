@@ -152,8 +152,7 @@ internal static class MessageService
     private static string FormatDependencyName(string dependencyTypeName, string? resolvingKey)
     {
         string part1 = $"dependency type {dependencyTypeName}";
-        string key = resolvingKey ?? EmptyKey;
-        string part2 = string.IsNullOrEmpty(key) ? string.Empty : $" having resolving key \"{key}\"";
+        string part2 = string.IsNullOrEmpty(resolvingKey) ? string.Empty : $" having resolving key \"{resolvingKey}\"";
         return part1 + part2;
     }
 
@@ -181,7 +180,7 @@ internal static class MessageService
     /// <returns>
     /// The generated dependency name string.
     /// </returns>
-    internal static string GetDependencyName(Type? dependencyType, string? resolvingKey)
+    private static string GetDependencyName(Type? dependencyType, string? resolvingKey)
     {
         string dependencyTypeName = dependencyType is null ? NA : dependencyType.GetFriendlyName();
         return FormatDependencyName(dependencyTypeName, resolvingKey);
@@ -196,7 +195,7 @@ internal static class MessageService
     /// <returns>
     /// The generated resolving name string.
     /// </returns>
-    internal static string GetResolvingName(Type resolvingType)
+    private static string GetResolvingName(Type resolvingType)
     {
         string resolvingTypeName = resolvingType.GetFriendlyName();
         return FormatResolvingName(resolvingTypeName);
