@@ -126,6 +126,7 @@ internal sealed class ServiceLocator : IServiceLocator
                 }
                 catch (Exception ex)
                 {
+                    // This exception should never happen. It's added here just in case.
                     string msg1 = FormatMessage<T>(MsgUnableToConstructService, resolvingKey);
                     throw new ServiceLocatorException(msg1, ex);
                 }
@@ -196,6 +197,7 @@ internal sealed class ServiceLocator : IServiceLocator
 
         if (constructorInfo is null)
         {
+            // This exception should never happen.
             string msg = FormatMessage<T>(MsgUnableToObtainConstructor, resolvingKey);
             throw new ServiceLocatorException(msg);
         }
@@ -226,6 +228,7 @@ internal sealed class ServiceLocator : IServiceLocator
     {
         if (constructorInfo.Invoke([ContainerKey]) is not T instance)
         {
+            // This exception should never happen.
             string msg = FormatMessage<T>(MsgNullInstanceCreated, resolvingKey);
             throw new ServiceLocatorException(msg);
         }
@@ -307,6 +310,7 @@ internal sealed class ServiceLocator : IServiceLocator
             }
         }
 
+        // This exception should never happen.
         string msg = FormatMessage(MsgDuplicateService, typeof(TInterface), resolvingKey, typeof(TImplementation));
         throw new ServiceLocatorException(msg);
     }
