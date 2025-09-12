@@ -5,7 +5,6 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 internal sealed class MockServiceLocator : IServiceLocator
 {
     private readonly object _lock = new();
-    private readonly List<string> _validResolvingKeys = [NonScoped, Scoped];
 
     private Mock<IContainer>? Container
     {
@@ -53,90 +52,54 @@ internal sealed class MockServiceLocator : IServiceLocator
 
         if (type == typeof(IContainer))
         {
-            Container
-                .Should()
-                .NotBeNull("The mock Container must be created before it is used.");
-            resolvingKey
-                .Should()
-                .Be(EmptyKey, "The resolving key must be empty for the mock Container object.");
-            return (T)Container.Object;
+            ValidateMockObjectRequest(Container, "Container", resolvingKey);
+            return (T)Container!.Object;
         }
 
         if (type == typeof(IDependencyListBuilder) || type == typeof(IDependencyListConsumer))
         {
-            DependencyList
-                .Should()
-                .NotBeNull("The mock DependencyList must be created before it is used.");
-            resolvingKey
-                .Should()
-                .Be(EmptyKey, "The resolving key must be empty for the mock DependencyList object.");
-            return (T)DependencyList.Object;
+            ValidateMockObjectRequest(DependencyList, "DependencyList", resolvingKey);
+            return (T)DependencyList!.Object;
         }
 
         if (type == typeof(IDependencyResolver))
         {
-            resolvingKey
-                .Should()
-                .BeOneOf(_validResolvingKeys, "The resolving key must be either NonScoped or Scoped for the mock DependencyResolver object.");
+            ValidateMockObjectRequest(NonScopedDependencyResolver, ScopedDependencyResolver, "DependencyResolver", resolvingKey);
 
             if (resolvingKey is NonScoped)
             {
-                NonScopedDependencyResolver
-                    .Should()
-                    .NotBeNull("The mock NonScoped DependencyResolver must be created before it is used.");
-                return (T)NonScopedDependencyResolver.Object;
+                return (T)NonScopedDependencyResolver!.Object;
             }
             else
             {
-                ScopedDependencyResolver
-                    .Should()
-                    .NotBeNull("The mock Scoped DependencyResolver must be created before it is used.");
-                return (T)ScopedDependencyResolver.Object;
+                return (T)ScopedDependencyResolver!.Object;
             }
         }
 
         if (type == typeof(IObjectConstructor))
         {
-            ObjectConstructor
-                .Should()
-                .NotBeNull("The mock ObjectConstructor must be created before it is used.");
-            resolvingKey
-                .Should()
-                .Be(EmptyKey, "The resolving key must be empty for the mock ObjectConstructor object.");
-            return (T)ObjectConstructor.Object;
+            ValidateMockObjectRequest(ObjectConstructor, "ObjectConstructor", resolvingKey);
+            return (T)ObjectConstructor!.Object;
         }
 
         if (type == typeof(IResolvingObjectsService))
         {
-            resolvingKey
-                .Should()
-                .BeOneOf(_validResolvingKeys, "The resolving key must be either NonScoped or Scoped for the mock ResolvingObjectsService object.");
+            ValidateMockObjectRequest(NonScopedResolvingObjectsService, ScopedResolvingObjectsService, "ResolvingObjectService", resolvingKey);
 
             if (resolvingKey is NonScoped)
             {
-                NonScopedResolvingObjectsService
-                    .Should()
-                    .NotBeNull("The mock NonScoped ResolvingObjectsService must be created before it is used.");
-                return (T)NonScopedResolvingObjectsService.Object;
+                return (T)NonScopedResolvingObjectsService!.Object;
             }
             else
             {
-                ScopedResolvingObjectsService
-                    .Should()
-                    .NotBeNull("The mock Scoped ResolvingObjectsService must be created before it is used.");
-                return (T)ScopedResolvingObjectsService.Object;
+                return (T)ScopedResolvingObjectsService!.Object;
             }
         }
 
         if (type == typeof(IScope))
         {
-            Scope
-                .Should()
-                .NotBeNull("The mock Scope must be created before it is used.");
-            resolvingKey
-                .Should()
-                .Be(EmptyKey, "The resolving key must be empty for the mock Scope object.");
-            return (T)Scope.Object;
+            ValidateMockObjectRequest(Scope, "Scope", resolvingKey);
+            return (T)Scope!.Object;
         }
 
         throw new TypeAccessException($"The type {type.FullName} is not known to the mock service locator.");
@@ -256,5 +219,48 @@ internal sealed class MockServiceLocator : IServiceLocator
         Scope?.Reset();
         ScopedDependencyResolver?.Reset();
         ScopedResolvingObjectsService?.Reset();
+    }
+
+    public void VerifyAll()
+    {
+        Container?.VerifyAll();
+        DependencyList?.VerifyAll();
+        NonScopedDependencyResolver?.VerifyAll();
+        NonScopedResolvingObjectsService?.VerifyAll();
+        ObjectConstructor?.VerifyAll();
+        Scope?.VerifyAll();
+        ScopedDependencyResolver?.VerifyAll();
+        ScopedResolvingObjectsService?.VerifyAll();
+    }
+
+    private static void ValidateMockObjectRequest(object? mockObject, string objectName, string resolvingKey)
+    {
+        mockObject
+            .Should()
+            .NotBeNull($"The mock {objectName} must be created before it is used.");
+
+        resolvingKey
+            .Should()
+            .Be(EmptyKey, $"The resolving key must be empty for the mock {objectName} object.");
+    }
+
+    private static void ValidateMockObjectRequest(object? mockNonScopedObject, object? mockScopedObject, string objectName, string resolvingKey)
+    {
+        resolvingKey
+            .Should()
+            .BeOneOf([NonScoped, Scoped], $"The resolving key must be either NonScoped or Scoped for the mock {objectName} object.");
+
+        if (resolvingKey is NonScoped)
+        {
+            mockNonScopedObject
+                .Should()
+                .NotBeNull($"The mock NonScoped {objectName} must be created before it is used.");
+        }
+        else
+        {
+            mockScopedObject
+                .Should()
+                .NotBeNull($"The mock Scoped {objectName} must be created before it is used.");
+        }
     }
 }
