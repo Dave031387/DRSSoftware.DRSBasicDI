@@ -162,9 +162,7 @@ public sealed class ContainerBuilder : IContainerBuilder
     public IContainerBuilder AddDependency(Func<DependencyBuilder, DependencyBuilder> builder)
     {
         ArgumentNullException.ThrowIfNull(builder, nameof(builder));
-        CheckForContainerAlreadyBuilt();
-        IDependency dependency = builder(DependencyBuilder.CreateNew).Build();
-        DependencyList.Add(dependency);
+        FinalizeDependency(builder(DependencyBuilder.CreateNew));
         return this;
     }
 
