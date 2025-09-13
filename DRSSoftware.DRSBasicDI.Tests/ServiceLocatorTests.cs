@@ -4,15 +4,17 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 
 public sealed class ServiceLocatorTests
 {
-    private const string ContainerKey = "Test";
-    private static readonly IServiceLocator _serviceLocator = ServiceLocator.GetInstance(ContainerKey);
+    private const string ContainerKey1 = "Test1";
+    private const string ContainerKey2 = "Test2";
+    private static readonly IServiceLocator _serviceLocator1 = ServiceLocator.GetInstance(ContainerKey1);
+    private static readonly IServiceLocator _serviceLocator2 = ServiceLocator.GetInstance(ContainerKey2);
 
     [Fact]
     public void GetContainer_ShouldReturnSingletonInstance()
     {
         // Arrange/Act
-        IContainer container1 = _serviceLocator.Get<IContainer>();
-        IContainer container2 = _serviceLocator.Get<IContainer>();
+        IContainer container1 = _serviceLocator1.Get<IContainer>();
+        IContainer container2 = _serviceLocator1.Get<IContainer>();
 
         // Assert
         container1
@@ -30,8 +32,8 @@ public sealed class ServiceLocatorTests
     public void GetDependencyListBuilder_ShouldReturnSingletonInstance()
     {
         // Arrange/Act
-        IDependencyListBuilder dependencyList1 = _serviceLocator.Get<IDependencyListBuilder>();
-        IDependencyListBuilder dependencyList2 = _serviceLocator.Get<IDependencyListBuilder>();
+        IDependencyListBuilder dependencyList1 = _serviceLocator1.Get<IDependencyListBuilder>();
+        IDependencyListBuilder dependencyList2 = _serviceLocator1.Get<IDependencyListBuilder>();
 
         // Assert
         dependencyList1
@@ -49,8 +51,8 @@ public sealed class ServiceLocatorTests
     public void GetDependencyListBuilderAndDependencyListConsumer_ShouldReturnSameInstance()
     {
         // Arrange/Act
-        IDependencyListBuilder dependencyList1 = _serviceLocator.Get<IDependencyListBuilder>();
-        IDependencyListConsumer dependencyList2 = _serviceLocator.Get<IDependencyListConsumer>();
+        IDependencyListBuilder dependencyList1 = _serviceLocator1.Get<IDependencyListBuilder>();
+        IDependencyListConsumer dependencyList2 = _serviceLocator1.Get<IDependencyListConsumer>();
 
         // Assert
         dependencyList1
@@ -62,8 +64,8 @@ public sealed class ServiceLocatorTests
     public void GetDependencyListConsumer_ShouldReturnSingletonInstance()
     {
         // Arrange/Act
-        IDependencyListConsumer dependencyList1 = _serviceLocator.Get<IDependencyListConsumer>();
-        IDependencyListConsumer dependencyList2 = _serviceLocator.Get<IDependencyListConsumer>();
+        IDependencyListConsumer dependencyList1 = _serviceLocator1.Get<IDependencyListConsumer>();
+        IDependencyListConsumer dependencyList2 = _serviceLocator1.Get<IDependencyListConsumer>();
 
         // Assert
         dependencyList1
@@ -81,8 +83,8 @@ public sealed class ServiceLocatorTests
     public void GetNonScopedDependencyResolver_ShouldNotBeSameAsScopedDependencyResolver()
     {
         // Arrange/Act
-        IDependencyResolver dependencyResolver1 = _serviceLocator.Get<IDependencyResolver>(NonScoped);
-        IDependencyResolver dependencyResolver2 = _serviceLocator.Get<IDependencyResolver>(Scoped);
+        IDependencyResolver dependencyResolver1 = _serviceLocator1.Get<IDependencyResolver>(NonScoped);
+        IDependencyResolver dependencyResolver2 = _serviceLocator1.Get<IDependencyResolver>(Scoped);
 
         // Assert
         dependencyResolver1
@@ -94,8 +96,8 @@ public sealed class ServiceLocatorTests
     public void GetNonScopedDependencyResolver_ShouldReturnSingletonInstance()
     {
         // Arrange/Act
-        IDependencyResolver dependencyResolver1 = _serviceLocator.Get<IDependencyResolver>(NonScoped);
-        IDependencyResolver dependencyResolver2 = _serviceLocator.Get<IDependencyResolver>(NonScoped);
+        IDependencyResolver dependencyResolver1 = _serviceLocator1.Get<IDependencyResolver>(NonScoped);
+        IDependencyResolver dependencyResolver2 = _serviceLocator1.Get<IDependencyResolver>(NonScoped);
 
         // Assert
         dependencyResolver1
@@ -113,8 +115,8 @@ public sealed class ServiceLocatorTests
     public void GetNonScopedResolvingObjectService_ShouldNotBeSameAsScopedResolvingObjectService()
     {
         // Arrange/Act
-        IResolvingObjectsService resolvingObjectsService1 = _serviceLocator.Get<IResolvingObjectsService>(NonScoped);
-        IResolvingObjectsService resolvingObjectsService2 = _serviceLocator.Get<IResolvingObjectsService>(Scoped);
+        IResolvingObjectsService resolvingObjectsService1 = _serviceLocator1.Get<IResolvingObjectsService>(NonScoped);
+        IResolvingObjectsService resolvingObjectsService2 = _serviceLocator1.Get<IResolvingObjectsService>(Scoped);
 
         // Assert
         resolvingObjectsService1
@@ -126,8 +128,8 @@ public sealed class ServiceLocatorTests
     public void GetNonScopedResolvingObjectService_ShouldReturnSingletonInstance()
     {
         // Arrange/Act
-        IResolvingObjectsService resolvingObjectsService1 = _serviceLocator.Get<IResolvingObjectsService>(NonScoped);
-        IResolvingObjectsService resolvingObjectsService2 = _serviceLocator.Get<IResolvingObjectsService>(NonScoped);
+        IResolvingObjectsService resolvingObjectsService1 = _serviceLocator1.Get<IResolvingObjectsService>(NonScoped);
+        IResolvingObjectsService resolvingObjectsService2 = _serviceLocator1.Get<IResolvingObjectsService>(NonScoped);
 
         // Assert
         resolvingObjectsService1
@@ -145,8 +147,8 @@ public sealed class ServiceLocatorTests
     public void GetObjectConstructor_ShouldReturnSingletonInstance()
     {
         // Arrange/Act
-        IObjectConstructor objectConstructor1 = _serviceLocator.Get<IObjectConstructor>();
-        IObjectConstructor objectConstructor2 = _serviceLocator.Get<IObjectConstructor>();
+        IObjectConstructor objectConstructor1 = _serviceLocator1.Get<IObjectConstructor>();
+        IObjectConstructor objectConstructor2 = _serviceLocator1.Get<IObjectConstructor>();
 
         // Assert
         objectConstructor1
@@ -164,8 +166,8 @@ public sealed class ServiceLocatorTests
     public void GetScope_ShouldReturnNewInstanceEachTime()
     {
         // Arrange/Act
-        IScope scope1 = _serviceLocator.Get<IScope>();
-        IScope scope2 = _serviceLocator.Get<IScope>();
+        IScope scope1 = _serviceLocator1.Get<IScope>();
+        IScope scope2 = _serviceLocator1.Get<IScope>();
 
         // Assert
         scope1
@@ -189,8 +191,8 @@ public sealed class ServiceLocatorTests
     public void GetScopedDependencyResolver_ShouldReturnNewInstanceEachTime()
     {
         // Arrange/Act
-        IDependencyResolver dependencyResolver1 = _serviceLocator.Get<IDependencyResolver>(Scoped);
-        IDependencyResolver dependencyResolver2 = _serviceLocator.Get<IDependencyResolver>(Scoped);
+        IDependencyResolver dependencyResolver1 = _serviceLocator1.Get<IDependencyResolver>(Scoped);
+        IDependencyResolver dependencyResolver2 = _serviceLocator1.Get<IDependencyResolver>(Scoped);
 
         // Assert
         dependencyResolver1
@@ -214,8 +216,8 @@ public sealed class ServiceLocatorTests
     public void GetScopedResolvingObjectService_ShouldReturnNewInstanceEachTime()
     {
         // Arrange/Act
-        IResolvingObjectsService resolvingObjectsService1 = _serviceLocator.Get<IResolvingObjectsService>(Scoped);
-        IResolvingObjectsService resolvingObjectsService2 = _serviceLocator.Get<IResolvingObjectsService>(Scoped);
+        IResolvingObjectsService resolvingObjectsService1 = _serviceLocator1.Get<IResolvingObjectsService>(Scoped);
+        IResolvingObjectsService resolvingObjectsService2 = _serviceLocator1.Get<IResolvingObjectsService>(Scoped);
 
         // Assert
         resolvingObjectsService1
@@ -236,13 +238,59 @@ public sealed class ServiceLocatorTests
     }
 
     [Fact]
+    public void GetServiceLocatorUsingDifferentContainerKey_ShouldReturnNewServiceLocatorInstance()
+    {
+        // Assert
+        _serviceLocator1
+            .Should()
+            .NotBeNull();
+        _serviceLocator2
+            .Should()
+            .NotBeNull();
+        _serviceLocator2
+            .Should()
+            .NotBeSameAs(_serviceLocator1);
+    }
+
+    [Fact]
+    public void GetServiceLocatorUsingStaticMethod_ShouldReturnSingletonInstanceOfServiceLocator()
+    {
+        // Arrange/Act
+        IServiceLocator serviceLocator = ServiceLocator.GetInstance(ContainerKey1);
+
+        // Assert
+        serviceLocator
+            .Should()
+            .BeSameAs(_serviceLocator1);
+    }
+
+    [Fact]
+    public void GetSingletonInstanceFromTwoDifferentServiceLocators_ShouldReturnDifferentInstances()
+    {
+        // Arrange/Act
+        IContainer container1 = _serviceLocator1.Get<IContainer>();
+        IContainer container2 = _serviceLocator2.Get<IContainer>();
+
+        // Assert
+        container1
+            .Should()
+            .NotBeNull();
+        container2
+            .Should()
+            .NotBeNull();
+        container1
+            .Should()
+            .NotBeSameAs(container2);
+    }
+
+    [Fact]
     public void TryToGetUnregisteredService_ShouldThrowException()
     {
         // Arrange
         string expected = FormatMessage<IClass1>(MsgServiceNotRegistered);
 
         // Act
-        static void action() => _serviceLocator.Get<IClass1>();
+        static void action() => _serviceLocator1.Get<IClass1>();
 
         // Assert
         AssertException<ServiceLocatorException>(action, expected);
