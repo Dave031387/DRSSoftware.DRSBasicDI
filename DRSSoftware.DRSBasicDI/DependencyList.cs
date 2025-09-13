@@ -27,7 +27,17 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     /// <summary>
     /// Create a new instance of the <see cref="DependencyList" /> class.
     /// </summary>
-    internal DependencyList(string _)
+    /// <remarks>
+    /// This constructor is intended for use in unit tests only.
+    /// </remarks>
+    internal DependencyList() : this("")
+    {
+    }
+
+    /// <summary>
+    /// Create a new instance of the <see cref="DependencyList" /> class.
+    /// </summary>
+    private DependencyList(string _)
     {
         Dependency containerDependency = new(typeof(IContainer),
                                              typeof(Container),

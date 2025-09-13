@@ -14,7 +14,7 @@ internal sealed class ServiceLocator : IServiceLocator
     /// <summary>
     /// The <see cref="BindingFlags" /> used to find constructors for the implementation types.
     /// </summary>
-    private const BindingFlags ConstructorBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    private const BindingFlags ConstructorBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
 
     /// <summary>
     /// A lock object used for ensuring thread safety.

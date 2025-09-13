@@ -19,7 +19,7 @@ internal sealed class Scope : ContainerBase, IScope
     /// A <see langword="string" /> used to identify the specific <see cref="ServiceLocator" />
     /// instance to use in resolving dependencies.
     /// </param>
-    internal Scope(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
+    private Scope(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
     {
     }
 

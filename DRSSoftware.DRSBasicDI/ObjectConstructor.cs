@@ -15,6 +15,16 @@ internal sealed class ObjectConstructor : IObjectConstructor
     /// <summary>
     /// Constructs a new instance of the <see cref="ObjectConstructor" /> class.
     /// </summary>
+    /// <remarks>
+    /// This constructor is intended for use in unit tests only.
+    /// </remarks>
+    internal ObjectConstructor() : this("")
+    {
+    }
+
+    /// <summary>
+    /// Constructs a new instance of the <see cref="ObjectConstructor" /> class.
+    /// </summary>
     internal ObjectConstructor(string _)
     {
     }
@@ -56,7 +66,10 @@ internal sealed class ObjectConstructor : IObjectConstructor
         }
         catch (Exception ex)
         {
-            string msg = FormatMessage<TDependency>(MsgErrorDuringConstruction, resolvingKey, constructorInfo.DeclaringType);
+            Type declaringType = constructorInfo is null || constructorInfo.DeclaringType is null
+                ? typeof(TDependency)
+                : constructorInfo.DeclaringType;
+            string msg = FormatMessage<TDependency>(MsgErrorDuringConstruction, resolvingKey, declaringType);
             throw new DependencyInjectionException(msg, ex);
         }
 

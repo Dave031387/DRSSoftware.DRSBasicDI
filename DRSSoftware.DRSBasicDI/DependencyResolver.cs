@@ -43,7 +43,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// A <see langword="string" /> used to identify the specific <see cref="ServiceLocator" />
     /// instance to use in resolving dependencies.
     /// </param>
-    internal DependencyResolver(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
+    private DependencyResolver(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
     {
     }
 

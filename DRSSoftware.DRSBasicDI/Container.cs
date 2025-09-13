@@ -28,7 +28,7 @@ internal sealed class Container : ContainerBase, IContainer
     /// A unique <see langword="string" /> value used to identify and retrieve a specific instance
     /// of the <see cref="Container" /> object.
     /// </param>
-    internal Container(string containerKey) : this(DRSBasicDI.ServiceLocator.GetInstance(containerKey), containerKey)
+    private Container(string containerKey) : this(DRSBasicDI.ServiceLocator.GetInstance(containerKey), containerKey)
     {
     }
 

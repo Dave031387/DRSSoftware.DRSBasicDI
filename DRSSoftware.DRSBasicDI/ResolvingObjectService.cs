@@ -26,7 +26,7 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// A <see langword="string" /> used to identify the specific <see cref="ServiceLocator" />
     /// instance to use in resolving dependencies.
     /// </param>
-    internal ResolvingObjectsService(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
+    private ResolvingObjectsService(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
     {
     }
 
