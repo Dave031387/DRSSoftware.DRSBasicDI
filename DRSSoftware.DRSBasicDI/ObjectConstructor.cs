@@ -18,14 +18,14 @@ internal sealed class ObjectConstructor : IObjectConstructor
     /// <remarks>
     /// This constructor is intended for use in unit tests only.
     /// </remarks>
-    internal ObjectConstructor() : this("")
+    internal ObjectConstructor() : this(EmptyKey)
     {
     }
 
     /// <summary>
     /// Constructs a new instance of the <see cref="ObjectConstructor" /> class.
     /// </summary>
-    internal ObjectConstructor(string _)
+    private ObjectConstructor(string _)
     {
     }
 
@@ -52,17 +52,15 @@ internal sealed class ObjectConstructor : IObjectConstructor
     /// <exception cref="DependencyInjectionException" />
     public TDependency Construct<TDependency>(ConstructorInfo constructorInfo, object[] parameterValues, string resolvingKey) where TDependency : class
     {
-        TDependency resolvingObject;
-
         try
         {
-            if (constructorInfo.Invoke(parameterValues) is not TDependency resolvingInstance)
+            if (constructorInfo.Invoke(parameterValues) is not TDependency resolvingObject)
             {
                 string msg = FormatMessage<TDependency>(MsgResolvingObjectNotCreated, resolvingKey, constructorInfo.DeclaringType);
                 throw new DependencyInjectionException(msg);
             }
 
-            resolvingObject = resolvingInstance;
+            return resolvingObject;
         }
         catch (Exception ex)
         {
@@ -72,7 +70,5 @@ internal sealed class ObjectConstructor : IObjectConstructor
             string msg = FormatMessage<TDependency>(MsgErrorDuringConstruction, resolvingKey, declaringType);
             throw new DependencyInjectionException(msg, ex);
         }
-
-        return resolvingObject;
     }
 }

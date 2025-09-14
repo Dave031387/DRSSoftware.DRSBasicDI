@@ -30,7 +30,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     /// <remarks>
     /// This constructor is intended for use in unit tests only.
     /// </remarks>
-    internal DependencyList() : this("")
+    internal DependencyList() : this(EmptyKey)
     {
     }
 
