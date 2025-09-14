@@ -1,6 +1,6 @@
 ﻿namespace DRSSoftware.DRSBasicDI.TestShared;
 
-using FluentAssertions;
+using DRSSoftware.DRSBasicDI.Interfaces;
 
 internal static class TestHelper
 {
@@ -33,4 +33,13 @@ internal static class TestHelper
             .WithInnerExceptionExactly<TInner>()
             .WithMessage(inner);
     }
+
+    internal static IDependency CreateScopedDependency<TDependency, TResolving>(string resolvingKey = EmptyKey)
+        => new Dependency(typeof(TDependency), typeof(TResolving), DependencyLifetime.Scoped, resolvingKey);
+
+    internal static IDependency CreateSingletonDependency<TDependency, TResolving>(string resolvingKey = EmptyKey)
+        => new Dependency(typeof(TDependency), typeof(TResolving), DependencyLifetime.Singleton, resolvingKey);
+
+    internal static IDependency CreateTransientDependency<TDependency, TResolving>(string resolvingKey = EmptyKey)
+        => new Dependency(typeof(TDependency), typeof(TResolving), DependencyLifetime.Transient, resolvingKey);
 }

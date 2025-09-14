@@ -96,23 +96,18 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     {
         ServiceKey serviceKey = new(typeof(TDependency), resolvingKey);
 
-        lock (_lock)
+        if (_dependencies.TryGetValue(serviceKey, out IDependency? dependency))
         {
-            if (_dependencies.TryGetValue(serviceKey, out IDependency? dependency))
+            if (dependency is null)
             {
-                if (dependency is null)
-                {
-                    string msg = FormatMessage(MsgNullDependencyObject, serviceKey.Type, serviceKey.ResolvingKey);
-                    throw new DependencyInjectionException(msg);
-                }
+                string msg1 = FormatMessage(MsgNullDependencyObject, serviceKey.Type, serviceKey.ResolvingKey);
+                throw new DependencyInjectionException(msg1);
+            }
 
-                return dependency;
-            }
-            else
-            {
-                string msg = FormatMessage(MsgDependencyMappingNotFound, serviceKey.Type, serviceKey.ResolvingKey);
-                throw new DependencyInjectionException(msg);
-            }
+            return dependency;
         }
+        
+        string msg2 = FormatMessage(MsgDependencyMappingNotFound, serviceKey.Type, serviceKey.ResolvingKey);
+        throw new DependencyInjectionException(msg2);
     }
 }
