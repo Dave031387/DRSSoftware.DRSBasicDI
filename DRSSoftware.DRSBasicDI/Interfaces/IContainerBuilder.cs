@@ -149,6 +149,20 @@ public interface IContainerBuilder
         where TResolving : class, TDependency;
 
     /// <summary>
+    /// Construct a new scoped <see cref="IDependency" /> object having the specified dependency
+    /// type <typeparamref name="TDependency" /> and whose resolving type is the same as the
+    /// dependency type. Add the new dependency to the container.
+    /// </summary>
+    /// <typeparam name="TDependency">
+    /// The type of the dependency.
+    /// </typeparam>
+    /// <returns>
+    /// The updated <see cref="IContainerBuilder" /> object.
+    /// </returns>
+    /// <exception cref="ContainerBuildException" />
+    IContainerBuilder AddScoped<TDependency>() where TDependency : class;
+
+    /// <summary>
     /// Construct a new singleton <see cref="IDependency" /> object and add it to the container.
     /// </summary>
     /// <param name="builder">
@@ -226,6 +240,20 @@ public interface IContainerBuilder
         where TResolving : class, TDependency;
 
     /// <summary>
+    /// Construct a new singleton <see cref="IDependency" /> object having the specified dependency
+    /// type <typeparamref name="TDependency" /> and whose resolving type is the same as the
+    /// dependency type. Add the new dependency to the container.
+    /// </summary>
+    /// <typeparam name="TDependency">
+    /// The type of the dependency.
+    /// </typeparam>
+    /// <returns>
+    /// The updated <see cref="IContainerBuilder" /> object.
+    /// </returns>
+    /// <exception cref="ContainerBuildException" />
+    IContainerBuilder AddSingleton<TDependency>() where TDependency : class;
+
+    /// <summary>
     /// Construct a new transient <see cref="IDependency" /> object and add it to the container.
     /// </summary>
     /// <param name="builder">
@@ -301,6 +329,20 @@ public interface IContainerBuilder
     public IContainerBuilder AddTransient<TDependency, TResolving>(Func<DependencyBuilder, DependencyBuilder> builder)
         where TDependency : class
         where TResolving : class, TDependency;
+
+    /// <summary>
+    /// Construct a new transient <see cref="IDependency" /> object having the specified dependency
+    /// type <typeparamref name="TDependency" /> and whose resolving type is the same as the
+    /// dependency type. Add the new dependency to the container.
+    /// </summary>
+    /// <typeparam name="TDependency">
+    /// The type of the dependency.
+    /// </typeparam>
+    /// <returns>
+    /// The updated <see cref="IContainerBuilder" /> object.
+    /// </returns>
+    /// <exception cref="ContainerBuildException" />
+    IContainerBuilder AddTransient<TDependency>() where TDependency : class;
 
     /// <summary>
     /// Build the <see cref="IContainer" /> object.

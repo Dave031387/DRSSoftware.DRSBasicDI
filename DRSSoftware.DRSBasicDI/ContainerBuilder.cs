@@ -297,6 +297,28 @@ public sealed class ContainerBuilder : IContainerBuilder
 
     /// <summary>
     /// Construct a new scoped <see cref="IDependency" /> object having the specified dependency
+    /// type <typeparamref name="TDependency" /> and whose resolving type is the same as the
+    /// dependency type. Add the new dependency to the container.
+    /// </summary>
+    /// <typeparam name="TDependency">
+    /// The type of the dependency.
+    /// </typeparam>
+    /// <returns>
+    /// The updated <see cref="IContainerBuilder" /> object.
+    /// </returns>
+    /// <exception cref="ContainerBuildException" />
+    public IContainerBuilder AddScoped<TDependency>() where TDependency : class
+    {
+        FinalizeDependency(DependencyBuilder
+            .CreateNew
+            .WithDependencyType<TDependency>()
+            .WithResolvingType<TDependency>()
+            .WithLifetime(DependencyLifetime.Scoped));
+        return this;
+    }
+
+    /// <summary>
+    /// Construct a new scoped <see cref="IDependency" /> object having the specified dependency
     /// type <typeparamref name="TDependency" /> and resolving type
     /// <typeparamref name="TResolving" /> and add it to the container.
     /// </summary>
@@ -325,6 +347,28 @@ public sealed class ContainerBuilder : IContainerBuilder
             .WithDependencyType<TDependency>()
             .WithResolvingType<TResolving>()
             .WithLifetime(DependencyLifetime.Scoped));
+        return this;
+    }
+
+    /// <summary>
+    /// Construct a new singleton <see cref="IDependency" /> object having the specified dependency
+    /// type <typeparamref name="TDependency" /> and whose resolving type is the same as the
+    /// dependency type. Add the new dependency to the container.
+    /// </summary>
+    /// <typeparam name="TDependency">
+    /// The type of the dependency.
+    /// </typeparam>
+    /// <returns>
+    /// The updated <see cref="IContainerBuilder" /> object.
+    /// </returns>
+    /// <exception cref="ContainerBuildException" />
+    public IContainerBuilder AddSingleton<TDependency>() where TDependency : class
+    {
+        FinalizeDependency(DependencyBuilder
+            .CreateNew
+            .WithDependencyType<TDependency>()
+            .WithResolvingType<TDependency>()
+            .WithLifetime(DependencyLifetime.Singleton));
         return this;
     }
 
@@ -431,6 +475,28 @@ public sealed class ContainerBuilder : IContainerBuilder
             .WithDependencyType<TDependency>()
             .WithResolvingType<TResolving>()
             .WithLifetime(DependencyLifetime.Singleton));
+        return this;
+    }
+
+    /// <summary>
+    /// Construct a new transient <see cref="IDependency" /> object having the specified dependency
+    /// type <typeparamref name="TDependency" /> and whose resolving type is the same as the
+    /// dependency type. Add the new dependency to the container.
+    /// </summary>
+    /// <typeparam name="TDependency">
+    /// The type of the dependency.
+    /// </typeparam>
+    /// <returns>
+    /// The updated <see cref="IContainerBuilder" /> object.
+    /// </returns>
+    /// <exception cref="ContainerBuildException" />
+    public IContainerBuilder AddTransient<TDependency>() where TDependency : class
+    {
+        FinalizeDependency(DependencyBuilder
+            .CreateNew
+            .WithDependencyType<TDependency>()
+            .WithResolvingType<TDependency>()
+            .WithLifetime(DependencyLifetime.Transient));
         return this;
     }
 
