@@ -55,7 +55,7 @@ public sealed class DependencyBuilder
     /// information that was passed into the <see cref="DependencyBuilder" /> object.
     /// </returns>
     /// <exception cref="DependencyBuildException" />
-    internal IDependency Build()
+    public IDependency Build()
     {
         Validate();
 
@@ -77,7 +77,7 @@ public sealed class DependencyBuilder
     /// type information.
     /// </returns>
     /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithDependencyType<TDependency>() where TDependency : class
+    public DependencyBuilder WithDependencyType<TDependency>() where TDependency : class
         => WithDependencyType(typeof(TDependency));
 
     /// <summary>
@@ -91,7 +91,7 @@ public sealed class DependencyBuilder
     /// type information.
     /// </returns>
     /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithDependencyType(Type dependencyType)
+    public DependencyBuilder WithDependencyType(Type dependencyType)
     {
         if (dependencyType is null)
         {
@@ -120,7 +120,7 @@ public sealed class DependencyBuilder
     /// lifetime information.
     /// </returns>
     /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithLifetime(DependencyLifetime lifetime)
+    public DependencyBuilder WithLifetime(DependencyLifetime lifetime)
     {
         if (lifetime is DependencyLifetime.Undefined)
         {
@@ -150,7 +150,7 @@ public sealed class DependencyBuilder
     /// key information.
     /// </returns>
     /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithResolvingKey(string resolvingKey)
+    public DependencyBuilder WithResolvingKey(string resolvingKey)
     {
         if (resolvingKey is null)
         {
@@ -179,7 +179,7 @@ public sealed class DependencyBuilder
     /// type information.
     /// </returns>
     /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithResolvingType<TResolving>() where TResolving : class
+    public DependencyBuilder WithResolvingType<TResolving>() where TResolving : class
         => WithResolvingType(typeof(TResolving));
 
     /// <summary>
@@ -193,7 +193,7 @@ public sealed class DependencyBuilder
     /// type information.
     /// </returns>
     /// <exception cref="DependencyBuildException" />
-    internal DependencyBuilder WithResolvingType(Type resolvingType)
+    public DependencyBuilder WithResolvingType(Type resolvingType)
     {
         if (resolvingType is null)
         {

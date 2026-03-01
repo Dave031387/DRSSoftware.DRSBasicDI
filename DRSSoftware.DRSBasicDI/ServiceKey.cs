@@ -14,12 +14,12 @@ using DRSSoftware.DRSBasicDI.Interfaces;
 /// An optional key used to identify the specific object to be retrieved, or an empty string if no
 /// key is needed.
 /// </param>
-internal sealed class ServiceKey(Type type, string resolvingKey) : IEquatable<ServiceKey>
+public sealed class ServiceKey(Type type, string resolvingKey) : IEquatable<ServiceKey>
 {
     /// <summary>
     /// Get the resolving key for the <see cref="ServiceKey" /> object.
     /// </summary>
-    internal string ResolvingKey
+    public string ResolvingKey
     {
         get;
     } = resolvingKey;
@@ -27,7 +27,7 @@ internal sealed class ServiceKey(Type type, string resolvingKey) : IEquatable<Se
     /// <summary>
     /// Get the type for the <see cref="ServiceKey" /> object.
     /// </summary>
-    internal Type Type
+    public Type Type
     {
         get;
     } = type;

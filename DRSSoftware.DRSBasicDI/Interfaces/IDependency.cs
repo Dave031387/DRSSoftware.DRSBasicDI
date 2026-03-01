@@ -4,7 +4,7 @@
 /// The <see cref="IDependency" /> interface defines the properties that describe a singe dependency
 /// within an application.
 /// </summary>
-internal interface IDependency : IEquatable<IDependency>
+public interface IDependency : IEquatable<IDependency>
 {
     /// <summary>
     /// Gets the dependency <see cref="ServiceKey" /> for this <see cref="IDependency" /> object.
