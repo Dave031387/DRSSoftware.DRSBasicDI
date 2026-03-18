@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 /// <summary>
 /// The <see cref="Container" /> class implements a basic dependency injection container for
 /// managing and resolving non-scoped dependencies.
@@ -19,7 +17,7 @@ internal sealed class Container : ContainerBase, IContainer
     /// <summary>
     /// A lock object used to ensure thread safety.
     /// </summary>
-    private static readonly object _lock = new();
+    private static readonly Lock _lock = new();
 
     /// <summary>
     /// Create a new instance of the <see cref="Container" /> class.
@@ -92,12 +90,9 @@ internal sealed class Container : ContainerBase, IContainer
             throw new DependencyInjectionException(MsgNullContainerKey);
         }
 
-        if (_containers.TryGetValue(containerKey, out IContainer? value))
-        {
-            return value;
-        }
-
-        throw new DependencyInjectionException(MsgContainerNotBuilt);
+        return _containers.TryGetValue(containerKey, out IContainer? value)
+            ? value
+            : throw new DependencyInjectionException(MsgContainerNotBuilt);
     }
 
     /// <summary>

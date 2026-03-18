@@ -1,6 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
 using System.Reflection;
 
 /// <summary>

@@ -10,7 +10,7 @@ public class ContainerBuildException : Exception
     /// <summary>
     /// Initializes a new instance of the <see cref="ContainerBuildException" /> class.
     /// </summary>
-    public ContainerBuildException()
+    public ContainerBuildException() : base()
     {
     }
 

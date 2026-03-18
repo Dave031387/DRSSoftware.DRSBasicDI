@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 /// <summary>
 /// The <see cref="Scope" /> class implements a basic dependency injection container for managing
 /// and resolving scoped dependencies. Each <see cref="Scope" /> object manages scoped dependencies

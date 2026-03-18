@@ -1,8 +1,6 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
 using System.Reflection;
-using IContainer = Interfaces.IContainer;
 
 /// <summary>
 /// The <see cref="ServiceLocator" /> class implements a basic service locator pattern for
@@ -23,7 +21,7 @@ internal sealed class ServiceLocator : IServiceLocator
     /// This lock is used when updating the global dictionary of available service locator
     /// instances.
     /// </remarks>
-    private static readonly object _globalLock = new();
+    private static readonly Lock _globalLock = new();
 
     /// <summary>
     /// A collection of service locators, keyed by their associated string identifiers.
@@ -42,7 +40,7 @@ internal sealed class ServiceLocator : IServiceLocator
     /// This lock is used when updating the local dictionary of services within a single service
     /// locator instance.
     /// </remarks>
-    private readonly object _localLock = new();
+    private readonly Lock _localLock = new();
 
     /// <summary>
     /// A dictionary of <see cref="Dependency" /> objects representing the various application
@@ -117,12 +115,9 @@ internal sealed class ServiceLocator : IServiceLocator
 
                     ServiceKey serviceKey = service.ResolvingServiceKey;
 
-                    if (service.Lifetime is DependencyLifetime.Singleton)
-                    {
-                        return GetSingleton<T>(serviceKey, constructorInfo);
-                    }
-
-                    return CreateInstance<T>(constructorInfo, resolvingKey);
+                    return service.Lifetime is DependencyLifetime.Singleton
+                        ? GetSingleton<T>(serviceKey, constructorInfo)
+                        : CreateInstance<T>(constructorInfo, resolvingKey);
                 }
                 catch (Exception ex)
                 {

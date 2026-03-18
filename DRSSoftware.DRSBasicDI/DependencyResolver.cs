@@ -2,7 +2,6 @@
 
 using DRSSoftware.DRSBasicDI.Attributes;
 using DRSSoftware.DRSBasicDI.Extensions;
-using DRSSoftware.DRSBasicDI.Interfaces;
 using System.Reflection;
 
 /// <summary>
@@ -106,7 +105,7 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// </summary>
     public void Dispose()
     {
-        if (_isDisposed is false)
+        if (!_isDisposed)
         {
             if (ScopedService is not null)
             {

@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 /// <summary>
 /// The <see cref="ContainerBase" /> class is an abstract base class that is implemented in both the
 /// <see cref="Container" /> and <see cref="Scope" /> classes. The class implements methods for

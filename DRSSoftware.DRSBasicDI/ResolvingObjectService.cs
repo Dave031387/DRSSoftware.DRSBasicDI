@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 /// <summary>
 /// The <see cref="ResolvingObjectsService" /> class manages a dictionary of resolving objects for
 /// the singleton and scoped dependencies contained in the dependency injection container.
@@ -17,7 +15,7 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     /// A lock object used to ensure thread safety when accessing/modifying the
     /// <see cref="_resolvingObjects" /> dictionary.
     /// </summary>
-    private readonly object _lock = new();
+    private readonly Lock _lock = new();
 
     /// <summary>
     /// Create an instance of the <see cref="ResolvingObjectsService" /> class.

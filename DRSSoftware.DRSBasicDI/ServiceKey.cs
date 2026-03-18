@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 /// <summary>
 /// The <see cref="ServiceKey" /> class is used as the key for retrieving <see cref="IDependency" />
 /// objects and singleton or scoped instances from the dependency injection container.
@@ -43,7 +41,8 @@ public sealed class ServiceKey(Type type, string resolvingKey) : IEquatable<Serv
     /// <see langword="true" /> if the given <paramref name="other" /><see cref="ServiceKey" />
     /// object is equal to this object. Otherwise, returns <see langword="false" />.
     /// </returns>
-    public bool Equals(ServiceKey? other) => other is not null && other.Type == Type && other.ResolvingKey == ResolvingKey;
+    public bool Equals(ServiceKey? other)
+        => other is not null && other.Type.Equals(Type) && other.ResolvingKey.Equals(ResolvingKey, StringComparison.Ordinal);
 
     /// <summary>
     /// Determine whether the given <paramref name="obj" /> object is equal to this object.

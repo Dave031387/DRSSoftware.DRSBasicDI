@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 /// <summary>
 /// The <see cref="Dependency" /> record contains properties that describe a single dependency
 /// within an application.
@@ -48,10 +46,10 @@ internal sealed record Dependency(Type DependencyType,
     /// <paramref name="other" /> object; otherwise, <see langword="false" />
     /// </returns>
     public bool Equals(IDependency? other) => other is not null
-                                              && other.DependencyType == DependencyType
-                                              && other.ResolvingType == ResolvingType
-                                              && other.Lifetime == Lifetime
-                                              && other.ResolvingKey == ResolvingKey;
+                                              && other.DependencyType.Equals(DependencyType)
+                                              && other.ResolvingType.Equals(ResolvingType)
+                                              && other.Lifetime.Equals(Lifetime)
+                                              && other.ResolvingKey.Equals(ResolvingKey, StringComparison.Ordinal);
 
     /// <summary>
     /// Generate a hash code for this <see cref="Dependency" /> object.

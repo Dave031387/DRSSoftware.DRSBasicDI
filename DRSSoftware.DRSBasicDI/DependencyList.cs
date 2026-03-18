@@ -1,8 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-using IContainer = Interfaces.IContainer;
-
 /// <summary>
 /// The <see cref="DependencyList" /> class is used for storing and retrieving
 /// <see cref="IDependency" /> objects representing application dependencies.
@@ -22,7 +19,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     /// A lock object used to ensure thread safety when accessing or saving
     /// <see cref="IDependency" /> objects.
     /// </summary>
-    private readonly object _lock = new();
+    private readonly Lock _lock = new();
 
     /// <summary>
     /// Create a new instance of the <see cref="DependencyList" /> class.
@@ -106,7 +103,7 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
 
             return dependency;
         }
-        
+
         string msg2 = FormatMessage(MsgDependencyMappingNotFound, serviceKey.Type, serviceKey.ResolvingKey);
         throw new DependencyInjectionException(msg2);
     }

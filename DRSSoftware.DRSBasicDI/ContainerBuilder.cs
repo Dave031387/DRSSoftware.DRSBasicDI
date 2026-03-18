@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 /// <summary>
 /// The <see cref="ContainerBuilder" /> class is used for constructing a new
 /// <see cref="Container" /> object to be used for dependency injection.
@@ -21,7 +19,7 @@ public sealed class ContainerBuilder : IContainerBuilder
     /// <summary>
     /// A lock object used to ensure thread safety.
     /// </summary>
-    private static readonly object _lock = new();
+    private static readonly Lock _lock = new();
 
     /// <summary>
     /// Represents the count of test containers currently in use.

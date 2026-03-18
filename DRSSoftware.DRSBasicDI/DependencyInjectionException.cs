@@ -10,7 +10,7 @@ public class DependencyInjectionException : Exception
     /// <summary>
     /// Initializes a new instance of the <see cref="DependencyInjectionException" /> class.
     /// </summary>
-    public DependencyInjectionException()
+    public DependencyInjectionException() : base()
     {
     }
 

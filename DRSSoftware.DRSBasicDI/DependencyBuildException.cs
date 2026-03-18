@@ -10,7 +10,7 @@ public class DependencyBuildException : Exception
     /// <summary>
     /// Initializes a new instance of the <see cref="DependencyBuildException" /> class.
     /// </summary>
-    public DependencyBuildException()
+    public DependencyBuildException() : base()
     {
     }
 

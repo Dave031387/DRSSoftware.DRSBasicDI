@@ -5,9 +5,9 @@
 namespace DRSSoftware.DRSBasicDI.Common;
 
 /// <summary>
-/// The <see cref="Globals" /> class is a static class containing global constants.
+/// The <see cref="GlobalConstants" /> class is a static class containing global constants.
 /// </summary>
-internal static class Globals
+internal static class GlobalConstants
 {
     /// <summary>
     /// The friendly name for the <see cref="bool" /> type.

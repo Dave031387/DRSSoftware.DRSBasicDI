@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 /// <summary>
 /// The <see cref="DependencyBuilder" /> class is used to construct a valid
 /// <see cref="IDependency" /> object.
