@@ -1,7 +1,6 @@
 ﻿namespace DRSSoftware.DRSBasicDI.TestClasses.Classes;
 
 using DRSSoftware.DRSBasicDI.Extensions;
-using DRSSoftware.DRSBasicDI.TestClasses.Interfaces;
 
 public class GenericClass1<T1, T2> : IGenericClass1<T1, T2>
 {

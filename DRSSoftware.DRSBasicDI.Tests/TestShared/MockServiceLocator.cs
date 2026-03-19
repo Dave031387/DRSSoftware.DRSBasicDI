@@ -1,10 +1,10 @@
 ﻿namespace DRSSoftware.DRSBasicDI.TestShared;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
+using System.Threading;
 
 internal sealed class MockServiceLocator : IServiceLocator
 {
-    private readonly object _lock = new();
+    private readonly Lock _lock = new();
 
     private Mock<IContainer>? Container
     {

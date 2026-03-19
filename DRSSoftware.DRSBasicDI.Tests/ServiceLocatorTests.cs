@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 public sealed class ServiceLocatorTests
 {
     private const string ContainerKey1 = "Test1";

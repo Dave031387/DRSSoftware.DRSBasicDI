@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI.TestShared;
 
-using DRSSoftware.DRSBasicDI.TestClasses.Classes;
-
 public static class TestDataFactory
 {
     public static TheoryData<Type, string> GetArrayTypes() => new()

@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 public class DependencyListTests
 {
     [Fact]

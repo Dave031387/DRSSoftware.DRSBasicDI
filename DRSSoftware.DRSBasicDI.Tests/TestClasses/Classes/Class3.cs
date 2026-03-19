@@ -1,7 +1,6 @@
 ﻿namespace DRSSoftware.DRSBasicDI.TestClasses.Classes;
 
 using DRSSoftware.DRSBasicDI.Attributes;
-using DRSSoftware.DRSBasicDI.TestClasses.Interfaces;
 
 public class Class3([ResolvingKey("Test")] IClass2 class2) : IClass3
 {

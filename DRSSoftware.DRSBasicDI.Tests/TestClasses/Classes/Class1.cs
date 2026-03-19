@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI.TestClasses.Classes;
 
-using DRSSoftware.DRSBasicDI.TestClasses.Interfaces;
-
 public class Class1 : IClass1
 {
     private static readonly bool _isInitialized;

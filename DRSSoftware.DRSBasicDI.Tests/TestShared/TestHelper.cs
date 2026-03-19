@@ -1,7 +1,5 @@
 ﻿namespace DRSSoftware.DRSBasicDI.TestShared;
 
-using DRSSoftware.DRSBasicDI.Interfaces;
-
 internal static class TestHelper
 {
     internal static void AssertException<T>(Action action, string message) where T : Exception
