@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly:InternalsVisibleTo("DRSSoftware.DRSBasicDI.Tests")]
+[assembly: InternalsVisibleTo("DRSSoftware.DRSBasicDI.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 namespace DRSSoftware.DRSBasicDI.Common;
 

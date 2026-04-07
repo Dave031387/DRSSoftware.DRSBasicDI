@@ -20,17 +20,6 @@ internal sealed class Container : ContainerBase, IContainer
     private static readonly Lock _lock = new();
 
     /// <summary>
-    /// Create a new instance of the <see cref="Container" /> class.
-    /// </summary>
-    /// <param name="containerKey">
-    /// A unique <see langword="string" /> value used to identify and retrieve a specific instance
-    /// of the <see cref="Container" /> object.
-    /// </param>
-    private Container(string containerKey) : this(DRSBasicDI.ServiceLocator.GetInstance(containerKey), containerKey)
-    {
-    }
-
-    /// <summary>
     /// Constructor for the <see cref="Container" /> class. Intended for unit testing only.
     /// </summary>
     /// <param name="serviceLocator">
@@ -48,6 +37,17 @@ internal sealed class Container : ContainerBase, IContainer
         IResolvingObjectsService resolvingObjectsService = ServiceLocator.Get<IResolvingObjectsService>(NonScoped);
         _ = resolvingObjectsService.Add<IContainer>(this, EmptyKey);
         DependencyResolver = ServiceLocator.Get<IDependencyResolver>(NonScoped);
+    }
+
+    /// <summary>
+    /// Create a new instance of the <see cref="Container" /> class.
+    /// </summary>
+    /// <param name="containerKey">
+    /// A unique <see langword="string" /> value used to identify and retrieve a specific instance
+    /// of the <see cref="Container" /> object.
+    /// </param>
+    private Container(string containerKey) : this(DRSBasicDI.ServiceLocator.GetInstance(containerKey), containerKey)
+    {
     }
 
     /// <summary>
