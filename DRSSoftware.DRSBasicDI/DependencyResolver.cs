@@ -1,8 +1,8 @@
 ﻿namespace DRSSoftware.DRSBasicDI;
 
+using System.Reflection;
 using DRSSoftware.DRSBasicDI.Attributes;
 using DRSSoftware.DRSBasicDI.Extensions;
-using System.Reflection;
 
 /// <summary>
 /// The <see cref="DependencyResolver" /> class is responsible for creating an instance of the
@@ -38,26 +38,33 @@ internal sealed class DependencyResolver : IDependencyResolver
     /// <summary>
     /// Create a new instance of the <see cref="DependencyResolver" /> class.
     /// </summary>
-    /// <param name="containerKey">
-    /// A <see langword="string" /> used to identify the specific <see cref="ServiceLocator" />
-    /// instance to use in resolving dependencies.
-    /// </param>
-    private DependencyResolver(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
-    {
-    }
-
-    /// <summary>
-    /// Create a new instance of the <see cref="DependencyResolver" /> class. This constructor is
-    /// intended for use in unit testing only.
-    /// </summary>
     /// <param name="serviceLocator">
     /// A service locator object that should provide mock instances of the requested dependencies.
     /// </param>
+    /// <remarks>
+    /// This constructor is intended for unit testing purposes only.
+    /// </remarks>
     internal DependencyResolver(IServiceLocator serviceLocator)
     {
         DependencyList = serviceLocator.Get<IDependencyListConsumer>();
         ObjectConstructor = serviceLocator.Get<IObjectConstructor>();
         NonScopedService = serviceLocator.Get<IResolvingObjectsService>(NonScoped);
+    }
+
+    /// <summary>
+    /// Create a new instance of the <see cref="DependencyResolver" /> class.
+    /// </summary>
+    /// <param name="containerKey">
+    /// A <see langword="string" /> used to identify the specific <see cref="ServiceLocator" />
+    /// instance to use in resolving dependencies.
+    /// </param>
+    /// <remarks>
+    /// This constructor is declared <see langword="private" /> and is only ever called by the
+    /// <see cref="DRSBasicDI.ServiceLocator" /> class when creating a new
+    /// <see cref="DependencyResolver" /> instance.
+    /// </remarks>
+    private DependencyResolver(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
+    {
     }
 
     /// <summary>

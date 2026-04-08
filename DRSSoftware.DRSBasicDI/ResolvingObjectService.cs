@@ -18,25 +18,32 @@ internal sealed class ResolvingObjectsService : IResolvingObjectsService
     private readonly Lock _lock = new();
 
     /// <summary>
+    /// Constructor for the <see cref="ResolvingObjectsService" /> class.
+    /// </summary>
+    /// <param name="serviceLocator">
+    /// A service locator object that should provide mock instances of the requested dependencies.
+    /// </param>
+    /// <remarks>
+    /// This constructor is intended for use in unit tests only.
+    /// </remarks>
+    internal ResolvingObjectsService(IServiceLocator serviceLocator)
+        => DependencyList = serviceLocator.Get<IDependencyListConsumer>();
+
+    /// <summary>
     /// Create an instance of the <see cref="ResolvingObjectsService" /> class.
     /// </summary>
     /// <param name="containerKey">
     /// A <see langword="string" /> used to identify the specific <see cref="ServiceLocator" />
     /// instance to use in resolving dependencies.
     /// </param>
+    /// <remarks>
+    /// This constructor is declared <see langword="private" /> and is only ever called by the
+    /// <see cref="ServiceLocator" /> class when creating a new
+    /// <see cref="ResolvingObjectsService" /> instance.
+    /// </remarks>
     private ResolvingObjectsService(string containerKey) : this(ServiceLocator.GetInstance(containerKey))
     {
     }
-
-    /// <summary>
-    /// Constructor for the <see cref="ResolvingObjectsService" /> class. Intended for unit testing
-    /// only.
-    /// </summary>
-    /// <param name="serviceLocator">
-    /// A service locator object that should provide mock instances of the requested dependencies.
-    /// </param>
-    internal ResolvingObjectsService(IServiceLocator serviceLocator)
-        => DependencyList = serviceLocator.Get<IDependencyListConsumer>();
 
     /// <summary>
     /// Get a reference to the <see cref="IDependencyListConsumer" /> object.

@@ -24,14 +24,24 @@ internal sealed record Dependency(Type DependencyType,
                                   string ResolvingKey) : IDependency
 {
     /// <summary>
+    /// Represents the service key used to identify the dependency service for resolution.
+    /// </summary>
+    private readonly ServiceKey _dependencyServiceKey = new(DependencyType, ResolvingKey);
+
+    /// <summary>
+    /// Represents the service key used for retrieving the resolving service for a dependency.
+    /// </summary>
+    private readonly ServiceKey _resolvingServiceKey = new(ResolvingType, ResolvingKey);
+
+    /// <summary>
     /// Gets the dependency <see cref="ServiceKey" /> for this <see cref="Dependency" /> object.
     /// </summary>
-    public ServiceKey DependencyServiceKey => new(DependencyType, ResolvingKey);
+    public ServiceKey DependencyServiceKey => _dependencyServiceKey;
 
     /// <summary>
     /// Gets the resolving <see cref="ServiceKey" /> for this <see cref="Dependency" /> object.
     /// </summary>
-    public ServiceKey ResolvingServiceKey => new(ResolvingType, ResolvingKey);
+    public ServiceKey ResolvingServiceKey => _resolvingServiceKey;
 
     /// <summary>
     /// Indicates whether the current <see cref="Dependency" /> object is equal to the specified

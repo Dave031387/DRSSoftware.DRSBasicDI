@@ -34,6 +34,13 @@ internal sealed class DependencyList : IDependencyListBuilder, IDependencyListCo
     /// <summary>
     /// Create a new instance of the <see cref="DependencyList" /> class.
     /// </summary>
+    /// <remarks>
+    /// This constructor is declared <see langword="private" /> and is only ever called by the
+    /// <see cref="ServiceLocator" /> class when creating a new <see cref="DependencyList" />
+    /// instance. <br /> This constructor has an unused string parameter. This is required because
+    /// the <see cref="ServiceLocator" /> class expects to find a constructor with a single string
+    /// parameter when creating new instances of any class.
+    /// </remarks>
     private DependencyList(string _)
     {
         Dependency containerDependency = new(typeof(IContainer),

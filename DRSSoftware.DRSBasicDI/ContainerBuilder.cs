@@ -37,6 +37,27 @@ public sealed class ContainerBuilder : IContainerBuilder
     private bool _containerHasBeenBuilt;
 
     /// <summary>
+    /// Create a new instance of the <see cref="ContainerBuilder" /> class using the specified
+    /// <paramref name="serviceLocator" /> object and <paramref name="containerKey" />.
+    /// </summary>
+    /// <param name="serviceLocator">
+    /// A service locator object that should provide mock instances of the requested dependencies.
+    /// </param>
+    /// <param name="containerKey">
+    /// An optional key for identifying the specific instance of the <see cref="ContainerBuilder" />
+    /// that is being used.
+    /// </param>
+    /// <remarks>
+    /// This constructor is intended for unit testing purposes only.
+    /// </remarks>
+    internal ContainerBuilder(IServiceLocator serviceLocator, string containerKey)
+    {
+        ServiceLocator = serviceLocator;
+        DependencyList = ServiceLocator.Get<IDependencyListBuilder>();
+        ContainerKey = containerKey;
+    }
+
+    /// <summary>
     /// Default constructor for the <see cref="ContainerBuilder" /> class.
     /// </summary>
     /// <param name="containerKey">
@@ -51,30 +72,6 @@ public sealed class ContainerBuilder : IContainerBuilder
     private ContainerBuilder(string containerKey)
         : this(DRSBasicDI.ServiceLocator.GetInstance(containerKey), containerKey)
     {
-    }
-
-    /// <summary>
-    /// Create a new instance of the <see cref="ContainerBuilder" /> class using the specified
-    /// <paramref name="serviceLocator" /> object and <paramref name="containerKey" />. This
-    /// constructor is intended for unit testing only.
-    /// </summary>
-    /// <param name="serviceLocator">
-    /// A service locator object that should provide mock instances of the requested dependencies.
-    /// </param>
-    /// <param name="containerKey">
-    /// An optional key for identifying the specific instance of the <see cref="ContainerBuilder" />
-    /// that is being used.
-    /// </param>
-    /// <remarks>
-    /// This constructor is declared <see langword="private" />. Use the static
-    /// <see cref="GetTestInstance(IServiceLocator)" /> method to create a new, empty
-    /// <see cref="IContainerBuilder" /> object for testing purposes.
-    /// </remarks>
-    private ContainerBuilder(IServiceLocator serviceLocator, string containerKey)
-    {
-        ServiceLocator = serviceLocator;
-        DependencyList = ServiceLocator.Get<IDependencyListBuilder>();
-        ContainerKey = containerKey;
     }
 
     /// <summary>
